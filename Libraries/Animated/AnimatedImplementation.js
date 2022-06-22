@@ -165,19 +165,21 @@ const spring = function (
     callback = _combineCallbacks(callback, configuration);
     const singleValue: any = animatedValue;
     const singleConfig: any = configuration;
-    singleValue.stopTracking();
-    if (configuration.toValue instanceof AnimatedNode) {
-      singleValue.track(
-        new AnimatedTracking(
-          singleValue,
-          configuration.toValue,
-          SpringAnimation,
-          singleConfig,
-          callback,
-        ),
-      );
-    } else {
-      singleValue.animate(new SpringAnimation(singleConfig), callback);
+    if(singleValue != null){
+      singleValue.stopTracking();
+      if (configuration.toValue instanceof AnimatedNode) {
+        singleValue.track(
+          new AnimatedTracking(
+            singleValue,
+            configuration.toValue,
+            SpringAnimation,
+            singleConfig,
+            callback,
+          ),
+        );
+      } else {
+        singleValue.animate(new SpringAnimation(singleConfig), callback);
+      }
     }
   };
   return (
@@ -218,19 +220,21 @@ const timing = function (
     callback = _combineCallbacks(callback, configuration);
     const singleValue: any = animatedValue;
     const singleConfig: any = configuration;
-    singleValue.stopTracking();
-    if (configuration.toValue instanceof AnimatedNode) {
-      singleValue.track(
-        new AnimatedTracking(
-          singleValue,
-          configuration.toValue,
-          TimingAnimation,
-          singleConfig,
-          callback,
-        ),
-      );
-    } else {
-      singleValue.animate(new TimingAnimation(singleConfig), callback);
+    if(singleValue != null){
+      singleValue.stopTracking();
+      if (configuration.toValue instanceof AnimatedNode) {
+        singleValue.track(
+          new AnimatedTracking(
+            singleValue,
+            configuration.toValue,
+            TimingAnimation,
+            singleConfig,
+            callback,
+          ),
+        );
+      } else {
+        singleValue.animate(new TimingAnimation(singleConfig), callback);
+      }
     }
   };
 
@@ -272,8 +276,10 @@ const decay = function (
     callback = _combineCallbacks(callback, configuration);
     const singleValue: any = animatedValue;
     const singleConfig: any = configuration;
-    singleValue.stopTracking();
-    singleValue.animate(new DecayAnimation(singleConfig), callback);
+    if(singleValue != null){
+      singleValue.stopTracking();
+      singleValue.animate(new DecayAnimation(singleConfig), callback);
+    }
   };
 
   return (
