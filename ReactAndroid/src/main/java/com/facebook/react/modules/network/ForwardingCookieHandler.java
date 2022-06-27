@@ -156,10 +156,12 @@ public class ForwardingCookieHandler extends CookieHandler {
    */
   private void logException(Exception e, String message) {
     try {
+      if(message == null){
+        message = "WebView not installed";
+      }
       AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(), e);
       AirtelLogger.getInstance().getLogBreadCrumb().invoke(AirtelLogger.getInstance().getBreadcrumbLoggerInstance(), "ForwardingCookieHandler", message);
-    } catch (java.lang.Exception ignored) {
-    }
+    } catch (java.lang.Exception ignored) {}
   }
 
   /**
