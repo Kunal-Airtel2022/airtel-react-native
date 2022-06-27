@@ -11,6 +11,7 @@ import android.content.Context;
 import android.view.View;
 import androidx.annotation.Nullable;
 import com.facebook.common.logging.FLog;
+import com.facebook.logger.AirtelLogger;
 import com.facebook.react.bridge.ColorPropConverter;
 import com.facebook.react.bridge.Dynamic;
 import com.facebook.react.bridge.DynamicFromObject;
@@ -77,6 +78,34 @@ import java.util.Map;
       return mPropType;
     }
 
+    /**
+     * Utility methods to log exceptions to bugsnag
+     */
+
+    private void logNodeExceptionToAirtel(ReactShadowNode nodeToUpdate, Throwable t) {
+      try {
+        String message =
+          "Error while updating property '"
+            + mPropName
+            + "' in shadow node of type: "
+            + nodeToUpdate.getViewClass();
+        AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(), new JSApplicationIllegalArgumentException(message, t));
+        AirtelLogger.getInstance().getLogBreadCrumb().invoke(AirtelLogger.getInstance().getBreadcrumbLoggerInstance(), "ViewManagersPropertyCache", message);
+      } catch (java.lang.Exception ignored) {}
+    }
+
+    private void logViewExceptionToAirtel(ViewManager viewManager, Throwable t) {
+      try {
+        String message =
+          "Error while updating property '"
+            + mPropName
+            + "' of a view managed by: "
+            + viewManager.getName();
+        AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(), new JSApplicationIllegalArgumentException(message, t));
+        AirtelLogger.getInstance().getLogBreadCrumb().invoke(AirtelLogger.getInstance().getBreadcrumbLoggerInstance(), "ViewManagersPropertyCache", message);
+      } catch (java.lang.Exception ignored) {}
+    }
+
     public void updateViewProp(ViewManager viewManager, View viewToUpdate, Object value) {
       try {
         Object[] args;
@@ -94,12 +123,7 @@ import java.util.Map;
         Arrays.fill(args, null);
       } catch (Throwable t) {
         FLog.e(ViewManager.class, "Error while updating prop " + mPropName, t);
-        throw new JSApplicationIllegalArgumentException(
-            "Error while updating property '"
-                + mPropName
-                + "' of a view managed by: "
-                + viewManager.getName(),
-            t);
+        logViewExceptionToAirtel(viewManager, t);
       }
     }
 
@@ -118,12 +142,7 @@ import java.util.Map;
         Arrays.fill(args, null);
       } catch (Throwable t) {
         FLog.e(ViewManager.class, "Error while updating prop " + mPropName, t);
-        throw new JSApplicationIllegalArgumentException(
-            "Error while updating property '"
-                + mPropName
-                + "' in shadow node of type: "
-                + nodeToUpdate.getViewClass(),
-            t);
+        logNodeExceptionToAirtel(nodeToUpdate, t);
       }
     }
 
