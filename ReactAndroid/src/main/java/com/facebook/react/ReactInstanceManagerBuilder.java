@@ -143,6 +143,10 @@ public class ReactInstanceManagerBuilder {
    * hermesEnabled = true sets the JS Engine as HERMES and JSC otherwise
    */
   public ReactInstanceManagerBuilder setJsEngineAsHermes(boolean hermesEnabled){
+    try{
+      AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(),
+        new IllegalArgumentException("setJsEngineAsHermes called with arg: " +hermesEnabled));
+    }catch (Exception e){}
     if(hermesEnabled){
       setJSEngine(JSInterpreter.HERMES);
     }
@@ -397,16 +401,16 @@ public class ReactInstanceManagerBuilder {
     } else if (jsInterpreter == JSInterpreter.HERMES) {
       HermesExecutor.loadLibrary();
       try {
-        AirtelLogger.getInstance().getLogBreadCrumb().invoke(AirtelLogger.getInstance().getBreadcrumbLoggerInstance(),
-          "ReactInstanceManagerBuilder", "Hermes loaded");
+        AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(),
+          new IllegalArgumentException("Hermes loaded"));
       }
       catch (Exception ignored){}
       return new HermesExecutorFactory();
     } else {
       JSCExecutor.loadLibrary();
       try {
-        AirtelLogger.getInstance().getLogBreadCrumb().invoke(AirtelLogger.getInstance().getBreadcrumbLoggerInstance(),
-          "ReactInstanceManagerBuilder", "JSC loaded");
+        AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(),
+          new IllegalArgumentException("Hermes loaded"));
       }
       catch (Exception ignored){}
       return new JSCExecutorFactory(appName, deviceName);
