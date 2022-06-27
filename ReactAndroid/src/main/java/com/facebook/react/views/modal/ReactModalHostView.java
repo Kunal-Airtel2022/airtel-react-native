@@ -25,6 +25,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import com.facebook.common.logging.FLog;
 import com.facebook.infer.annotation.Assertions;
+import com.facebook.logger.AirtelLogger;
 import com.facebook.react.R;
 import com.facebook.react.bridge.GuardedRunnable;
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -357,29 +358,38 @@ public class ReactModalHostView extends ViewGroup
    * true when the property changes
    */
   private void updateProperties() {
-    Assertions.assertNotNull(mDialog, "mDialog must exist when we call updateProperties");
+    /** Preventing crash due to activity destroyed before re-rendering and logging it instead
+     * @see: https://app.bugsnag.com/airtel-1/airtel-thanks/errors/626a538201f4df00080f039b?event_id=62764d4f0093eec7bcb00000&i=jr&m=ci&pivot_tab=event
+     */
+    try {
+      Activity currentActivity = getCurrentActivity();
 
-    Activity currentActivity = getCurrentActivity();
+      Window window = mDialog.getWindow();
+      if (currentActivity == null || currentActivity.isFinishing() || !window.isActive()) {
+        // If the activity has disappeared, then we shouldn't update the window associated to the
+        // Dialog.
+        return;
+      }
+      int activityWindowFlags = currentActivity.getWindow().getAttributes().flags;
+      if ((activityWindowFlags & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0) {
+        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+      } else {
+        window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+      }
 
-    Window window = mDialog.getWindow();
-    if (currentActivity == null || currentActivity.isFinishing() || !window.isActive()) {
-      // If the activity has disappeared, then we shouldn't update the window associated to the
-      // Dialog.
-      return;
-    }
-    int activityWindowFlags = currentActivity.getWindow().getAttributes().flags;
-    if ((activityWindowFlags & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0) {
-      window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-    } else {
-      window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-    }
-
-    if (mTransparent) {
-      window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-    } else {
-      window.setDimAmount(0.5f);
-      window.setFlags(
+      if (mTransparent) {
+        window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+      } else {
+        window.setDimAmount(0.5f);
+        window.setFlags(
           WindowManager.LayoutParams.FLAG_DIM_BEHIND, WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+      }
+    } catch (Exception e) {
+      try {
+        AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(), e);
+        AirtelLogger.getInstance().getLogBreadCrumb().invoke(AirtelLogger.getInstance().getBreadcrumbLoggerInstance(), "ReactModalHostView",
+          e.getMessage());
+      } catch (Exception ignored) {}
     }
   }
 
