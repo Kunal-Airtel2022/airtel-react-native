@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import com.facebook.hermes.reactexecutor.HermesExecutor;
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
 import com.facebook.infer.annotation.Assertions;
+import com.facebook.logger.AirtelLogger;
 import com.facebook.react.bridge.JSBundleLoader;
 import com.facebook.react.bridge.JSIModulePackage;
 import com.facebook.react.bridge.JavaScriptExecutorFactory;
@@ -395,9 +396,19 @@ public class ReactInstanceManagerBuilder {
       }
     } else if (jsInterpreter == JSInterpreter.HERMES) {
       HermesExecutor.loadLibrary();
+      try {
+        AirtelLogger.getInstance().getLogBreadCrumb().invoke(AirtelLogger.getInstance().getBreadcrumbLoggerInstance(),
+          "ReactInstanceManagerBuilder", "Hermes loaded");
+      }
+      catch (Exception ignored){}
       return new HermesExecutorFactory();
     } else {
       JSCExecutor.loadLibrary();
+      try {
+        AirtelLogger.getInstance().getLogBreadCrumb().invoke(AirtelLogger.getInstance().getBreadcrumbLoggerInstance(),
+          "ReactInstanceManagerBuilder", "JSC loaded");
+      }
+      catch (Exception ignored){}
       return new JSCExecutorFactory(appName, deviceName);
     }
   }
