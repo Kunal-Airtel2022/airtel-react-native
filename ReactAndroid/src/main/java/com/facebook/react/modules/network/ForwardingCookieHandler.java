@@ -17,6 +17,8 @@ import android.text.TextUtils;
 import android.webkit.CookieManager;
 import android.webkit.ValueCallback;
 import androidx.annotation.Nullable;
+
+import com.facebook.logger.AirtelLogger;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.GuardedAsyncTask;
 import com.facebook.react.bridge.ReactContext;
@@ -134,28 +136,30 @@ public class ForwardingCookieHandler extends CookieHandler {
       possiblyWorkaroundSyncManager(mContext);
       try {
         mCookieManager = CookieManager.getInstance();
-      } catch (IllegalArgumentException ex) {
-        // https://bugs.chromium.org/p/chromium/issues/detail?id=559720
-        return null;
       } catch (Exception exception) {
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=559720
+        // catching MissingWebViewPackageException Exception
+        // catching dlopen failed: "/system/app/Chrome/Chrome.apk!/lib/armeabi-v7a/libmonochrome.so" is 32-bit instead of 64-bit
         String message = exception.getMessage();
-        // We cannot catch MissingWebViewPackageException as it is in a private / system API
-        // class. This validates the exception's message to ensure we are only handling this
-        // specific exception.
-        // https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/webkit/WebViewFactory.java#348
-        if (message != null
-            && exception.getClass().getCanonicalName().contains("MissingWebViewPackageException")) {
-          return null;
-        } else {
-          throw exception;
-        }
+        logException(exception, message);
       }
     }
-
     return mCookieManager;
   }
 
   private static void possiblyWorkaroundSyncManager(Context context) {}
+
+
+  /**
+   * Utility method for logging exception to bugsnag before preventing it
+   */
+  private void logException(Exception e, String message) {
+    try {
+      AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(), e);
+      AirtelLogger.getInstance().getLogBreadCrumb().invoke(AirtelLogger.getInstance().getBreadcrumbLoggerInstance(), "ForwardingCookieHandler", message);
+    } catch (java.lang.Exception ignored) {
+    }
+  }
 
   /**
    * Responsible for flushing cookies to disk. Flushes to disk with a maximum delay of 30 seconds.
