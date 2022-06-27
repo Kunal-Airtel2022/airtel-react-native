@@ -142,6 +142,7 @@ public class ForwardingCookieHandler extends CookieHandler {
         // catching dlopen failed: "/system/app/Chrome/Chrome.apk!/lib/armeabi-v7a/libmonochrome.so" is 32-bit instead of 64-bit
         String message = exception.getMessage();
         logException(exception, message);
+        return null;
       }
     }
     return mCookieManager;
