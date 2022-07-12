@@ -10,12 +10,12 @@
   },
   "createdBy": {
     "gradle": {
-      "version": "7.4.2"
+      "version": "7.3.3"
     }
   },
   "variants": [
     {
-      "name": "releaseVariantReleaseApiPublication",
+      "name": "releaseApiPublication",
       "attributes": {
         "org.gradle.category": "library",
         "org.gradle.dependency.bundling": "external",
@@ -133,16 +133,16 @@
         {
           "name": "react-native-0.68.2.aar",
           "url": "react-native-0.68.2.aar",
-          "size": 16414747,
-          "sha512": "ef180e5285f636f27190d221a082948a51892d1dc5a92be6e9f19ea6f20f1c01bfe31c42f6d625439a8780fc5e0317b94dd7284483916c27c5db0303b056d2d1",
-          "sha256": "e46f384af209513f001af9d121a62567cb60593987299a6eefb0ecd663e18f32",
-          "sha1": "5466871b8c83cba7579665dced51ad4cf58238a8",
-          "md5": "2d1432968c259be6a836ce7e577c6f73"
+          "size": 16414652,
+          "sha512": "da6eb60c86cd842801ebef8c488e30fd270a80b432f35e71a73fe45b45738f07c649ebdeac30b977116db51e898e0f3686e1a550eb83942c2befd8a37245ea74",
+          "sha256": "4d52b5bc1533ef3cdb62f69f68e4b8665663cb11d1a4f8e3a2b05686732389c5",
+          "sha1": "653fde6b242697aebf26f78d1bae51ee156fe484",
+          "md5": "49717cdfcf6e3a33f799735c247928cb"
         }
       ]
     },
     {
-      "name": "releaseVariantReleaseRuntimePublication",
+      "name": "releaseRuntimePublication",
       "attributes": {
         "org.gradle.category": "library",
         "org.gradle.dependency.bundling": "external",
@@ -260,11 +260,11 @@
         {
           "name": "react-native-0.68.2.aar",
           "url": "react-native-0.68.2.aar",
-          "size": 16414747,
-          "sha512": "ef180e5285f636f27190d221a082948a51892d1dc5a92be6e9f19ea6f20f1c01bfe31c42f6d625439a8780fc5e0317b94dd7284483916c27c5db0303b056d2d1",
-          "sha256": "e46f384af209513f001af9d121a62567cb60593987299a6eefb0ecd663e18f32",
-          "sha1": "5466871b8c83cba7579665dced51ad4cf58238a8",
-          "md5": "2d1432968c259be6a836ce7e577c6f73"
+          "size": 16414652,
+          "sha512": "da6eb60c86cd842801ebef8c488e30fd270a80b432f35e71a73fe45b45738f07c649ebdeac30b977116db51e898e0f3686e1a550eb83942c2befd8a37245ea74",
+          "sha256": "4d52b5bc1533ef3cdb62f69f68e4b8665663cb11d1a4f8e3a2b05686732389c5",
+          "sha1": "653fde6b242697aebf26f78d1bae51ee156fe484",
+          "md5": "49717cdfcf6e3a33f799735c247928cb"
         }
       ]
     }
