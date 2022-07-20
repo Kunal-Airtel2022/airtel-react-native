@@ -41,6 +41,11 @@
   <a href="https://github.com/facebook/react-native/blob/HEAD/.github/SUPPORT.md">Support</a>
 </h3>
 
+# Commands to get up-to-date release tags from facebook/react-native:
+### git fetch --tags upstream
+### git push -f --tags origin master
+## 
+
 React Native brings [**React**'s][r] declarative UI framework to iOS and Android. With React Native, you use native UI controls and have full access to the native platform.
 
 - **Declarative.** React makes it painless to create interactive UIs. Declarative views make your code more predictable and easier to debug.
