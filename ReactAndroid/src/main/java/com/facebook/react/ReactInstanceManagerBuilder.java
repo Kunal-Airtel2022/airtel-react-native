@@ -344,6 +344,8 @@ public class ReactInstanceManagerBuilder {
         mSurfaceDelegateFactory);
   }
 
+  // new code
+
   private JavaScriptExecutorFactory getDefaultJSExecutorFactory(
     String appName, String deviceName, Context applicationContext) {
     HermesExecutor.loadLibrary();
