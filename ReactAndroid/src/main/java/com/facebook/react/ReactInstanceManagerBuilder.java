@@ -285,8 +285,6 @@ public class ReactInstanceManagerBuilder {
    * </ul>
    */
   public ReactInstanceManager build() {
-    Assertions.assertNotNull(
-        mApplication, "Application property has not been set with this builder");
 
     if (mInitialLifecycleState == LifecycleState.RESUMED) {
       Assertions.assertNotNull(
