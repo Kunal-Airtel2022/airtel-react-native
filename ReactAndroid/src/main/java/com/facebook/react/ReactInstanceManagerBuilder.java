@@ -345,6 +345,7 @@ public class ReactInstanceManagerBuilder {
   }
 
   // new code
+  // testing build
 
   private JavaScriptExecutorFactory getDefaultJSExecutorFactory(
     String appName, String deviceName, Context applicationContext) {
