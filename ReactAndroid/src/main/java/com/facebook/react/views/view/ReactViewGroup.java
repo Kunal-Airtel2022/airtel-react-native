@@ -488,7 +488,6 @@ public class ReactViewGroup extends ViewGroup
 
   @Override
   public void removeView(View view) {
-    UiThreadUtil.assertOnUiThread();
 
     if (!customDrawOrderDisabled()) {
       getDrawingOrderHelper().handleRemoveView(view);
