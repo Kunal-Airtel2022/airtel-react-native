@@ -291,14 +291,6 @@ public class ReactInstanceManagerBuilder {
           mCurrentActivity, "Activity needs to be set if initial lifecycle state is resumed");
     }
 
-    Assertions.assertCondition(
-        mUseDeveloperSupport || mJSBundleAssetUrl != null || mJSBundleLoader != null,
-        "JS Bundle File or Asset URL has to be provided when dev support is disabled");
-
-    Assertions.assertCondition(
-        mJSMainModulePath != null || mJSBundleAssetUrl != null || mJSBundleLoader != null,
-        "Either MainModulePath or JS Bundle File needs to be provided");
-
     if (mUIImplementationProvider == null) {
       // create default UIImplementationProvider if the provided one is null.
       mUIImplementationProvider = new UIImplementationProvider();
