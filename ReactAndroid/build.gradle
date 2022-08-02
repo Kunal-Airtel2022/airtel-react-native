@@ -57,6 +57,7 @@ task downloadBoost(dependsOn: createNativeDepsDirectories, type: Download) {
 }
 
 final def prepareBoost = tasks.register("prepareBoost", PrepareBoostTask) {
+    //it.dependsOn(boostPath ? [] : [downloadBoost])
     it.boostPath.setFrom(boostPath ?: tarTree(resources.gzip(downloadBoost.dest)))
     it.boostVersion.set(BOOST_VERSION)
     it.outputDir.set(new File(thirdPartyNdkDir, "boost"))
@@ -69,6 +70,7 @@ task downloadDoubleConversion(dependsOn: createNativeDepsDirectories, type: Down
     dest(new File(downloadsDir, "double-conversion-${DOUBLE_CONVERSION_VERSION}.tar.gz"))
 }
 
+// removing dependency from download task
 task prepareDoubleConversion(type: Copy) {
     from(dependenciesPath ?: tarTree(downloadDoubleConversion.dest))
     from("src/main/jni/third-party/double-conversion/Android.mk")
@@ -85,6 +87,7 @@ task downloadFolly(dependsOn: createNativeDepsDirectories, type: Download) {
     dest(new File(downloadsDir, "folly-${FOLLY_VERSION}.tar.gz"))
 }
 
+// removing dependency from download task
 task prepareFolly(type: Copy) {
     from(dependenciesPath ?: tarTree(downloadFolly.dest))
     from("src/main/jni/third-party/folly/Android.mk")
@@ -101,6 +104,7 @@ task downloadFmt(dependsOn: createNativeDepsDirectories, type: Download) {
     dest(new File(downloadsDir, "fmt-${FMT_VERSION}.tar.gz"))
 }
 
+// removing dependency from download task
 task prepareFmt(type: Copy) {
     from(dependenciesPath ?: tarTree(downloadFmt.dest))
     from("src/main/jni/third-party/fmt/Android.mk")
@@ -119,6 +123,7 @@ task downloadLibevent(dependsOn: createNativeDepsDirectories, type: Download) {
 
 
 final def prepareLibevent = tasks.register("prepareLibevent", PrepareLibeventTask) {
+    //it.dependsOn(dependenciesPath ? [] : [downloadLibevent])
     it.libeventPath.setFrom(dependenciesPath ?: tarTree(downloadLibevent.dest))
     it.libeventVersion.set(LIBEVENT_VERSION)
     it.outputDir.set(new File(thirdPartyNdkDir, "libevent"))
@@ -152,6 +157,7 @@ task downloadGlog(dependsOn: createNativeDepsDirectories, type: Download) {
 // Prepare glog sources to be compiled, this task will perform steps that normally should've been
 // executed by automake. This way we can avoid dependencies on make/automake
 final def prepareGlog = tasks.register("prepareGlog", PrepareGlogTask) {
+    //it.dependsOn(dependenciesPath ? [] : [downloadGlog])
     it.glogPath.setFrom(dependenciesPath ?: tarTree(downloadGlog.dest))
     it.glogVersion.set(GLOG_VERSION)
     it.outputDir.set(new File(thirdPartyNdkDir, "glog"))
@@ -163,16 +169,18 @@ tasks.register('prepareJSC', PrepareJSCTask) {
     it.outputDir = project.layout.buildDirectory.dir("third-party-ndk/jsc")
 }
 
-//task downloadNdkBuildDependencies {
-//    if (!boostPath) {
-//        dependsOn(downloadBoost)
-//    }
-//    dependsOn(downloadDoubleConversion)
-//    dependsOn(downloadFolly)
-//    dependsOn(downloadGlog)
-//    dependsOn(downloadFmt)
-//    dependsOn(downloadLibevent)
-//}
+// disabling download tasks for jenkins to build from local artifacts copied from dev machine
+
+/*task downloadNdkBuildDependencies {
+    if (!boostPath) {
+        dependsOn(downloadBoost)
+    }
+    dependsOn(downloadDoubleConversion)
+    dependsOn(downloadFolly)
+    dependsOn(downloadGlog)
+    dependsOn(downloadFmt)
+    dependsOn(downloadLibevent)
+}*/
 
 /**
  * Finds the path of the installed npm package with the given name using Node's
