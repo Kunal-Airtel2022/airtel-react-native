@@ -37,7 +37,7 @@ def use_react_native! (
   path: "../node_modules/react-native",
   fabric_enabled: false,
   new_arch_enabled: ENV['RCT_NEW_ARCH_ENABLED'] == '1',
-  production: false,
+  production: ENV['PRODUCTION'] == '1',
   hermes_enabled: true,
   flipper_configuration: FlipperConfiguration.disabled,
   app_path: '..',
@@ -156,6 +156,7 @@ def react_native_post_install(installer, react_native_path = "../node_modules/re
 
   ReactNativePodsUtils.exclude_i386_architecture_while_using_hermes(installer)
   ReactNativePodsUtils.fix_library_search_paths(installer)
+  ReactNativePodsUtils.fix_react_bridging_header_search_paths(installer)
   ReactNativePodsUtils.set_node_modules_user_settings(installer, react_native_path)
 
   NewArchitectureHelper.set_clang_cxx_language_standard_if_needed(installer)
