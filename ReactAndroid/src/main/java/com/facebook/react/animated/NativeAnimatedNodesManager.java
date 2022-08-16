@@ -121,8 +121,8 @@ import java.util.Queue;
   public void createAnimatedNode(int tag, ReadableMap config) {
     if (mAnimatedNodes.get(tag) != null) {
       logException(JSApplicationIllegalArgumentException(
-          "createAnimatedNode: Animated node [" + tag + "] already exists");
-      )
+          "createAnimatedNode: Animated node [" + tag + "] already exists")
+      );
       return;
     }
     String type = config.getString("type");
