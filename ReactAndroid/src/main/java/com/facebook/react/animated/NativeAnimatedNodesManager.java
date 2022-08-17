@@ -670,19 +670,24 @@ import java.util.Queue;
     }
 
     while (!nodesQueue.isEmpty()) {
-      AnimatedNode nextNode = nodesQueue.poll();
-      if (nextNode.mChildren != null) {
-        for (int i = 0; i < nextNode.mChildren.size(); i++) {
-          AnimatedNode child = nextNode.mChildren.get(i);
-          if(child == null)
-            continue;
-          child.mActiveIncomingNodes++;
-          if (child.mBFSColor != mAnimatedGraphBFSColor) {
-            child.mBFSColor = mAnimatedGraphBFSColor;
-            activeNodesCount++;
-            nodesQueue.add(child);
+      try {
+        AnimatedNode nextNode = nodesQueue.poll();
+        if (nextNode.mChildren != null) {
+          for (int i = 0; i < nextNode.mChildren.size(); i++) {
+            AnimatedNode child = nextNode.mChildren.get(i);
+            if (child == null)
+              continue;
+            child.mActiveIncomingNodes++;
+            if (child.mBFSColor != mAnimatedGraphBFSColor) {
+              child.mBFSColor = mAnimatedGraphBFSColor;
+              activeNodesCount++;
+              nodesQueue.add(child);
+            }
           }
         }
+      }
+      catch (Exception e){
+        logException(e);
       }
     }
 
