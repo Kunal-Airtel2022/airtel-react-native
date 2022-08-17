@@ -674,6 +674,8 @@ import java.util.Queue;
       if (nextNode.mChildren != null) {
         for (int i = 0; i < nextNode.mChildren.size(); i++) {
           AnimatedNode child = nextNode.mChildren.get(i);
+          if(child == null)
+            continue;
           child.mActiveIncomingNodes++;
           if (child.mBFSColor != mAnimatedGraphBFSColor) {
             child.mBFSColor = mAnimatedGraphBFSColor;
