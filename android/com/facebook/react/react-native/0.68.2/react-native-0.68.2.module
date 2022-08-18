@@ -1,0 +1,316 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.facebook.react",
+    "module": "react-native",
+    "version": "0.68.2",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.3.3"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "com.facebook.infer.annotation",
+          "module": "infer-annotation",
+          "version": {
+            "requires": "0.18.0"
+          }
+        },
+        {
+          "group": "com.facebook.yoga",
+          "module": "proguard-annotations",
+          "version": {
+            "requires": "1.19.0"
+          }
+        },
+        {
+          "group": "javax.inject",
+          "module": "javax.inject",
+          "version": {
+            "requires": "1"
+          }
+        },
+        {
+          "group": "androidx.appcompat",
+          "module": "appcompat",
+          "version": {
+            "requires": "1.0.2"
+          }
+        },
+        {
+          "group": "androidx.autofill",
+          "module": "autofill",
+          "version": {
+            "requires": "1.1.0"
+          }
+        },
+        {
+          "group": "androidx.swiperefreshlayout",
+          "module": "swiperefreshlayout",
+          "version": {
+            "requires": "1.0.0"
+          }
+        },
+        {
+          "group": "com.facebook.fresco",
+          "module": "fresco",
+          "version": {
+            "requires": "2.5.0"
+          },
+          "excludes": [
+            {
+              "group": "com.facebook.fresco",
+              "module": "soloader"
+            },
+            {
+              "group": "com.facebook.fresco",
+              "module": "nativeimagetranscoder"
+            },
+            {
+              "group": "com.facebook.soloader",
+              "module": "soloader"
+            },
+            {
+              "group": "com.facebook.fresco",
+              "module": "memory-type-native"
+            },
+            {
+              "group": "com.facebook.fresco",
+              "module": "imagepipeline-native"
+            }
+          ]
+        },
+        {
+          "group": "com.facebook.fresco",
+          "module": "imagepipeline-okhttp3",
+          "version": {
+            "requires": "2.5.0"
+          }
+        },
+        {
+          "group": "com.facebook.fresco",
+          "module": "ui-common",
+          "version": {
+            "requires": "2.5.0"
+          }
+        },
+        {
+          "group": "com.facebook.soloader",
+          "module": "soloader",
+          "version": {
+            "requires": "0.10.3"
+          }
+        },
+        {
+          "group": "com.google.code.findbugs",
+          "module": "jsr305",
+          "version": {
+            "requires": "3.0.2"
+          }
+        },
+        {
+          "group": "com.squareup.okhttp3",
+          "module": "okhttp",
+          "version": {
+            "requires": "4.9.2"
+          }
+        },
+        {
+          "group": "com.squareup.okhttp3",
+          "module": "okhttp-urlconnection",
+          "version": {
+            "requires": "4.9.2"
+          }
+        },
+        {
+          "group": "com.squareup.okio",
+          "module": "okio",
+          "version": {
+            "requires": "2.9.0"
+          }
+        },
+        {
+          "group": "com.facebook.fbjni",
+          "module": "fbjni-java-only",
+          "version": {
+            "requires": "0.2.2"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "react-native-0.68.2.aar",
+          "url": "react-native-0.68.2.aar",
+          "size": 16413739,
+          "sha512": "1959bb373ee572061bb9274d2dec1457859d0cef7fca20e6decb2dc62b85a58245f3aee1a8a32b802b071e48410c8f4379237aacc06deb557006cbcd852e5b1f",
+          "sha256": "32b91b7a1684f31ef1f1a8f890628e350619a8a6eb4b01112732f6f9aed3d391",
+          "sha1": "5916a11451d4efe912739123728c51fc0e121116",
+          "md5": "239fe34aa3a7a115c57f9446b98fd3ec"
+        }
+      ]
+    },
+    {
+      "name": "releaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "com.facebook.infer.annotation",
+          "module": "infer-annotation",
+          "version": {
+            "requires": "0.18.0"
+          }
+        },
+        {
+          "group": "com.facebook.yoga",
+          "module": "proguard-annotations",
+          "version": {
+            "requires": "1.19.0"
+          }
+        },
+        {
+          "group": "javax.inject",
+          "module": "javax.inject",
+          "version": {
+            "requires": "1"
+          }
+        },
+        {
+          "group": "androidx.appcompat",
+          "module": "appcompat",
+          "version": {
+            "requires": "1.0.2"
+          }
+        },
+        {
+          "group": "androidx.autofill",
+          "module": "autofill",
+          "version": {
+            "requires": "1.1.0"
+          }
+        },
+        {
+          "group": "androidx.swiperefreshlayout",
+          "module": "swiperefreshlayout",
+          "version": {
+            "requires": "1.0.0"
+          }
+        },
+        {
+          "group": "com.facebook.fresco",
+          "module": "fresco",
+          "version": {
+            "requires": "2.5.0"
+          },
+          "excludes": [
+            {
+              "group": "com.facebook.fresco",
+              "module": "soloader"
+            },
+            {
+              "group": "com.facebook.fresco",
+              "module": "nativeimagetranscoder"
+            },
+            {
+              "group": "com.facebook.soloader",
+              "module": "soloader"
+            },
+            {
+              "group": "com.facebook.fresco",
+              "module": "memory-type-native"
+            },
+            {
+              "group": "com.facebook.fresco",
+              "module": "imagepipeline-native"
+            }
+          ]
+        },
+        {
+          "group": "com.facebook.fresco",
+          "module": "imagepipeline-okhttp3",
+          "version": {
+            "requires": "2.5.0"
+          }
+        },
+        {
+          "group": "com.facebook.fresco",
+          "module": "ui-common",
+          "version": {
+            "requires": "2.5.0"
+          }
+        },
+        {
+          "group": "com.facebook.soloader",
+          "module": "soloader",
+          "version": {
+            "requires": "0.10.3"
+          }
+        },
+        {
+          "group": "com.google.code.findbugs",
+          "module": "jsr305",
+          "version": {
+            "requires": "3.0.2"
+          }
+        },
+        {
+          "group": "com.squareup.okhttp3",
+          "module": "okhttp",
+          "version": {
+            "requires": "4.9.2"
+          }
+        },
+        {
+          "group": "com.squareup.okhttp3",
+          "module": "okhttp-urlconnection",
+          "version": {
+            "requires": "4.9.2"
+          }
+        },
+        {
+          "group": "com.squareup.okio",
+          "module": "okio",
+          "version": {
+            "requires": "2.9.0"
+          }
+        },
+        {
+          "group": "com.facebook.fbjni",
+          "module": "fbjni-java-only",
+          "version": {
+            "requires": "0.2.2"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "react-native-0.68.2.aar",
+          "url": "react-native-0.68.2.aar",
+          "size": 16413739,
+          "sha512": "1959bb373ee572061bb9274d2dec1457859d0cef7fca20e6decb2dc62b85a58245f3aee1a8a32b802b071e48410c8f4379237aacc06deb557006cbcd852e5b1f",
+          "sha256": "32b91b7a1684f31ef1f1a8f890628e350619a8a6eb4b01112732f6f9aed3d391",
+          "sha1": "5916a11451d4efe912739123728c51fc0e121116",
+          "md5": "239fe34aa3a7a115c57f9446b98fd3ec"
+        }
+      ]
+    }
+  ]
+}
