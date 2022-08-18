@@ -389,7 +389,6 @@ dependencies {
     api("com.facebook.fresco:fresco:${FRESCO_VERSION}"){
         exclude group: 'com.facebook.soloader', module: 'soloader'
         exclude group: 'com.facebook.fresco', module: 'soloader'
-        exclude group: 'com.facebook.fresco', module: 'nativeimagefilters'
         exclude group: 'com.facebook.fresco', module: 'nativeimagetranscoder'
         exclude group: 'com.facebook.fresco', module: 'memory-type-native'
         exclude group: 'com.facebook.fresco', module: 'imagepipeline-native'
