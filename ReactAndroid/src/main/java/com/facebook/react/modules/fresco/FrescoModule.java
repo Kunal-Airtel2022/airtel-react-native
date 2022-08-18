@@ -8,12 +8,16 @@
 package com.facebook.react.modules.fresco;
 
 import android.content.Context;
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 import com.facebook.common.logging.FLog;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.backends.okhttp3.OkHttpImagePipelineConfigFactory;
 import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.facebook.imagepipeline.core.MemoryChunkType;
+import com.facebook.imagepipeline.core.ImageTranscoderType;
 import com.facebook.imagepipeline.listener.RequestListener;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -155,6 +159,7 @@ public class FrescoModule extends ReactContextBaseJavaModule
    * @return {@link ImagePipelineConfig.Builder} that has been initialized with default values
    */
   public static ImagePipelineConfig.Builder getDefaultConfigBuilder(ReactContext context) {
+    Log.e("FrescoModule", "Initialising Fresco java only module")
     HashSet<RequestListener> requestListeners = new HashSet<>();
     requestListeners.add(new SystraceRequestListener());
 
@@ -169,7 +174,10 @@ public class FrescoModule extends ReactContextBaseJavaModule
     return OkHttpImagePipelineConfigFactory.newBuilder(context.getApplicationContext(), client)
         .setNetworkFetcher(new ReactOkHttpNetworkFetcher(client))
         .setDownsampleEnabled(false)
-        .setRequestListeners(requestListeners);
+        .setRequestListeners(requestListeners)
+        .setMemoryChunkType(MemoryChunkType.BUFFER_MEMORY)
+        .setImageTranscoderType(ImageTranscoderType.JAVA_TRANSCODER)
+        .experiment().setNativeCodeDisabled(true);
   }
 
   @Override
