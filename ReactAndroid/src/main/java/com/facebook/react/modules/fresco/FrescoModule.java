@@ -159,7 +159,7 @@ public class FrescoModule extends ReactContextBaseJavaModule
    * @return {@link ImagePipelineConfig.Builder} that has been initialized with default values
    */
   public static ImagePipelineConfig.Builder getDefaultConfigBuilder(ReactContext context) {
-    Log.e("FrescoModule", "Initialising Fresco java only module")
+    Log.e("FrescoModule", "Initialising Fresco java only module");
     HashSet<RequestListener> requestListeners = new HashSet<>();
     requestListeners.add(new SystraceRequestListener());
 
