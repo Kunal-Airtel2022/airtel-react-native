@@ -70,7 +70,29 @@
           "module": "fresco",
           "version": {
             "requires": "2.5.0"
-          }
+          },
+          "excludes": [
+            {
+              "group": "com.facebook.fresco",
+              "module": "soloader"
+            },
+            {
+              "group": "com.facebook.fresco",
+              "module": "nativeimagetranscoder"
+            },
+            {
+              "group": "com.facebook.soloader",
+              "module": "soloader"
+            },
+            {
+              "group": "com.facebook.fresco",
+              "module": "memory-type-native"
+            },
+            {
+              "group": "com.facebook.fresco",
+              "module": "imagepipeline-native"
+            }
+          ]
         },
         {
           "group": "com.facebook.fresco",
@@ -133,11 +155,11 @@
         {
           "name": "react-native-0.68.2.aar",
           "url": "react-native-0.68.2.aar",
-          "size": 16419481,
-          "sha512": "e5b536dcfe1e6c88f13ca167aedbf8020c2efb53555b2edfc27571ba661e1f2290f6bf60c08b9be53d6e6303d584f5fb38bf3551dacaed8db6e71e73aa3c8850",
-          "sha256": "12c5cae651bad3fff0bc5a6bc91d1e49a891991468d742701aec9473043760a6",
-          "sha1": "3edea84f90bcff68a0be42136cc12299d378a51e",
-          "md5": "ebaffcb24d5d91d5cd7a198d8cce3029"
+          "size": 16413944,
+          "sha512": "38a7beca3cd610f0241d846c6d1f673980ce907bf98654a31e991649c56f2668930e4f595b2b61536947b5d46a5633072fbbf6606cc9efc86b3fb09b5d1ed341",
+          "sha256": "77a13fb0d959af916447564eb3087efce0ada63b1dc0acfdf52f2ada4c562ef3",
+          "sha1": "a68383110d36a021b2b2df0b69569c3db593f4dd",
+          "md5": "4fd0b07628852f730a7ddef3d92ca0ef"
         }
       ]
     },
@@ -197,7 +219,29 @@
           "module": "fresco",
           "version": {
             "requires": "2.5.0"
-          }
+          },
+          "excludes": [
+            {
+              "group": "com.facebook.fresco",
+              "module": "soloader"
+            },
+            {
+              "group": "com.facebook.fresco",
+              "module": "nativeimagetranscoder"
+            },
+            {
+              "group": "com.facebook.soloader",
+              "module": "soloader"
+            },
+            {
+              "group": "com.facebook.fresco",
+              "module": "memory-type-native"
+            },
+            {
+              "group": "com.facebook.fresco",
+              "module": "imagepipeline-native"
+            }
+          ]
         },
         {
           "group": "com.facebook.fresco",
@@ -260,11 +304,11 @@
         {
           "name": "react-native-0.68.2.aar",
           "url": "react-native-0.68.2.aar",
-          "size": 16419481,
-          "sha512": "e5b536dcfe1e6c88f13ca167aedbf8020c2efb53555b2edfc27571ba661e1f2290f6bf60c08b9be53d6e6303d584f5fb38bf3551dacaed8db6e71e73aa3c8850",
-          "sha256": "12c5cae651bad3fff0bc5a6bc91d1e49a891991468d742701aec9473043760a6",
-          "sha1": "3edea84f90bcff68a0be42136cc12299d378a51e",
-          "md5": "ebaffcb24d5d91d5cd7a198d8cce3029"
+          "size": 16413944,
+          "sha512": "38a7beca3cd610f0241d846c6d1f673980ce907bf98654a31e991649c56f2668930e4f595b2b61536947b5d46a5633072fbbf6606cc9efc86b3fb09b5d1ed341",
+          "sha256": "77a13fb0d959af916447564eb3087efce0ada63b1dc0acfdf52f2ada4c562ef3",
+          "sha1": "a68383110d36a021b2b2df0b69569c3db593f4dd",
+          "md5": "4fd0b07628852f730a7ddef3d92ca0ef"
         }
       ]
     }
