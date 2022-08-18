@@ -37,13 +37,6 @@ allprojects {
             }
         }
     }
-    configurations {
-        all {
-            resolutionStrategy {
-                force("com.facebook.fresco:ui-common:2.2.0")
-            }
-        }
-    }
 }
 
 tasks.register("cleanAll", Delete::class.java) {
