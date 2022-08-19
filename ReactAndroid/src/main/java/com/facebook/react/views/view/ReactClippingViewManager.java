@@ -43,8 +43,7 @@ public abstract class ReactClippingViewManager<T extends ReactViewGroup>
       try {
         String message = "Exception occurred: " + e.getMessage();
         AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(), e);
-        AirtelLogger.getInstance().getLogBreadCrumb().invoke(AirtelLogger.getInstance().getBreadcrumbLoggerInstance(),
-          "ReactClippingViewManager", message);
+        AirtelLogger.getInstance().getLogBreadCrumb().invoke(AirtelLogger.getInstance().getBreadcrumbLoggerInstance(), "ReactClippingViewManager", message);
       } catch (Exception ignored) {}
     }
   }

@@ -13,6 +13,7 @@ import androidx.annotation.UiThread;
 import com.facebook.common.logging.FLog;
 import com.facebook.fbreact.specs.NativeAnimatedModuleSpec;
 import com.facebook.infer.annotation.Assertions;
+import com.facebook.logger.AirtelLogger;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -152,7 +153,7 @@ public class NativeAnimatedModule extends NativeAnimatedModuleSpec
                       ReactChoreographer.CallbackType.NATIVE_ANIMATED_MODULE,
                       mAnimatedFrameCallback);
             } catch (Exception ex) {
-              throw new RuntimeException(ex);
+              logException(ex);
             }
           }
         };
@@ -898,5 +899,13 @@ public class NativeAnimatedModule extends NativeAnimatedModuleSpec
     if (context != null) {
       context.removeLifecycleEventListener(this);
     }
+  }
+
+  private void logException(Exception e){
+    try {
+      AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(), e);
+      AirtelLogger.getInstance().getLogBreadCrumb().invoke(AirtelLogger.getInstance().getBreadcrumbLoggerInstance(), NAME,  e.getMessage());
+    }
+    catch (Exception ignored){}
   }
 }

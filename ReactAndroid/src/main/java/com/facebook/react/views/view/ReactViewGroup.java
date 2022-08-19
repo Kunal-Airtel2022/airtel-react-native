@@ -1000,8 +1000,7 @@ public class ReactViewGroup extends ViewGroup
 
   private void logBreadcrumb(String message) {
     try {
-      AirtelLogger.getInstance().getLogBreadCrumb().invoke(AirtelLogger.getInstance().getBreadcrumbLoggerInstance(),
-        "ReactViewGroup", message);
+      AirtelLogger.getInstance().getLogBreadCrumb().invoke(AirtelLogger.getInstance().getBreadcrumbLoggerInstance(), "ReactViewGroup", message);
     } catch (Exception ignored) {}
   }
 }
