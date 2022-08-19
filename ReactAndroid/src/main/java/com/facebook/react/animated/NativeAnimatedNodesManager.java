@@ -708,6 +708,8 @@ import java.util.Queue;
     // find nodes with zero "incoming nodes", those can be either nodes from `mUpdatedNodes` or
     // ones connected to active animations
     for (AnimatedNode node : nodes) {
+      if(node == null)
+        continue;
       if (node.mActiveIncomingNodes == 0 && node.mBFSColor != mAnimatedGraphBFSColor) {
         node.mBFSColor = mAnimatedGraphBFSColor;
         updatedNodesCount++;
@@ -739,18 +741,25 @@ import java.util.Queue;
         // Potentially send events to JS when the node's value is updated
         ((ValueAnimatedNode) nextNode).onValueUpdate();
       }
-      if (nextNode.mChildren != null) {
-        for (int i = 0; i < nextNode.mChildren.size(); i++) {
-          AnimatedNode child = nextNode.mChildren.get(i);
-          child.mActiveIncomingNodes--;
-          if (child.mBFSColor != mAnimatedGraphBFSColor && child.mActiveIncomingNodes == 0) {
-            child.mBFSColor = mAnimatedGraphBFSColor;
-            updatedNodesCount++;
-            nodesQueue.add(child);
-          } else if (child.mBFSColor == mAnimatedGraphBFSColor) {
-            cyclesDetected++;
+      try {
+        if (nextNode.mChildren != null) {
+          for (int i = 0; i < nextNode.mChildren.size(); i++) {
+            AnimatedNode child = nextNode.mChildren.get(i);
+            if (child == null)
+              continue;
+            child.mActiveIncomingNodes--;
+            if (child.mBFSColor != mAnimatedGraphBFSColor && child.mActiveIncomingNodes == 0) {
+              child.mBFSColor = mAnimatedGraphBFSColor;
+              updatedNodesCount++;
+              nodesQueue.add(child);
+            } else if (child.mBFSColor == mAnimatedGraphBFSColor) {
+              cyclesDetected++;
+            }
           }
         }
+      }
+      catch (Exception e){
+        logException(e);
       }
     }
 
