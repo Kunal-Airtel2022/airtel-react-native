@@ -816,7 +816,7 @@ import java.util.Queue;
   private void logException(Exception e){
     try {
       AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(), e);
-      AirtelLogger.getInstance().getLogBreadCrumb().invoke(AirtelLogger.getInstance().getBreadcrumbLoggerInstance(), e.getMessage());
+      AirtelLogger.getInstance().getLogBreadCrumb().invoke(AirtelLogger.getInstance().getBreadcrumbLoggerInstance(), TAG, e.getMessage());
     }
     catch (Exception ignored){}
   }
