@@ -17,8 +17,6 @@ import android.text.TextUtils;
 import android.webkit.CookieManager;
 import android.webkit.ValueCallback;
 import androidx.annotation.Nullable;
-
-import com.facebook.logger.AirtelLogger;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.GuardedAsyncTask;
 import com.facebook.react.bridge.ReactContext;
@@ -136,33 +134,35 @@ public class ForwardingCookieHandler extends CookieHandler {
       possiblyWorkaroundSyncManager(mContext);
       try {
         mCookieManager = CookieManager.getInstance();
-      } catch (Exception exception) {
+      } catch (IllegalArgumentException ex) {
         // https://bugs.chromium.org/p/chromium/issues/detail?id=559720
-        // catching MissingWebViewPackageException Exception
-        // catching dlopen failed: "/system/app/Chrome/Chrome.apk!/lib/armeabi-v7a/libmonochrome.so" is 32-bit instead of 64-bit
-        String message = exception.getMessage();
-        logException(exception, message);
         return null;
+      } catch (Exception exception) {
+        String message = exception.getMessage();
+        // We cannot catch MissingWebViewPackageException as it is in a private / system API
+        // class. This validates the exception's message to ensure we are only handling this
+        // specific exception.
+        // The exception class doesn't always contain the correct name as it depends on the OEM
+        // and OS version. It is better to check the message for clues regarding the exception
+        // as that is somewhat consistent across OEMs.
+        // For instance, the Exception thrown on OxygenOS 11 is a RuntimeException but the message
+        // contains the required strings.
+        // https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/webkit/WebViewFactory.java#348
+        if (exception.getClass().getCanonicalName().contains("MissingWebViewPackageException")
+            || (message != null
+                && (message.contains("WebView provider")
+                    || message.contains("No WebView installed")))) {
+          return null;
+        } else {
+          throw exception;
+        }
       }
     }
+
     return mCookieManager;
   }
 
   private static void possiblyWorkaroundSyncManager(Context context) {}
-
-
-  /**
-   * Utility method for logging exception to bugsnag before preventing it
-   */
-  private void logException(Exception e, String message) {
-    try {
-      if(message == null){
-        message = "WebView not installed";
-      }
-      AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(), e);
-      AirtelLogger.getInstance().getLogBreadCrumb().invoke(AirtelLogger.getInstance().getBreadcrumbLoggerInstance(), "ForwardingCookieHandler", message);
-    } catch (java.lang.Exception ignored) {}
-  }
 
   /**
    * Responsible for flushing cookies to disk. Flushes to disk with a maximum delay of 30 seconds.
