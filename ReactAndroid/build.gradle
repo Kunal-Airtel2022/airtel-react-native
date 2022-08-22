@@ -57,7 +57,7 @@ task downloadBoost(dependsOn: createNativeDepsDirectories, type: Download) {
 }
 
 final def prepareBoost = tasks.register("prepareBoost", PrepareBoostTask) {
-    //it.dependsOn(boostPath ? [] : [downloadBoost])
+    it.dependsOn(boostPath ? [] : [downloadBoost])
     it.boostPath.setFrom(boostPath ?: tarTree(resources.gzip(downloadBoost.dest)))
     it.boostVersion.set(BOOST_VERSION)
     it.outputDir.set(new File(thirdPartyNdkDir, "boost"))
@@ -70,8 +70,7 @@ task downloadDoubleConversion(dependsOn: createNativeDepsDirectories, type: Down
     dest(new File(downloadsDir, "double-conversion-${DOUBLE_CONVERSION_VERSION}.tar.gz"))
 }
 
-// removing dependency from download task
-task prepareDoubleConversion(type: Copy) {
+task prepareDoubleConversion(dependsOn: dependenciesPath ? [] : [downloadDoubleConversion], type: Copy) {
     from(dependenciesPath ?: tarTree(downloadDoubleConversion.dest))
     from("src/main/jni/third-party/double-conversion/Android.mk")
     include("double-conversion-${DOUBLE_CONVERSION_VERSION}/src/**/*", "Android.mk")
@@ -87,8 +86,7 @@ task downloadFolly(dependsOn: createNativeDepsDirectories, type: Download) {
     dest(new File(downloadsDir, "folly-${FOLLY_VERSION}.tar.gz"))
 }
 
-// removing dependency from download task
-task prepareFolly(type: Copy) {
+task prepareFolly(dependsOn: dependenciesPath ? [] : [downloadFolly], type: Copy) {
     from(dependenciesPath ?: tarTree(downloadFolly.dest))
     from("src/main/jni/third-party/folly/Android.mk")
     include("folly-${FOLLY_VERSION}/folly/**/*", "Android.mk")
@@ -104,8 +102,7 @@ task downloadFmt(dependsOn: createNativeDepsDirectories, type: Download) {
     dest(new File(downloadsDir, "fmt-${FMT_VERSION}.tar.gz"))
 }
 
-// removing dependency from download task
-task prepareFmt(type: Copy) {
+task prepareFmt(dependsOn: dependenciesPath ? [] : [downloadFmt], type: Copy) {
     from(dependenciesPath ?: tarTree(downloadFmt.dest))
     from("src/main/jni/third-party/fmt/Android.mk")
     include("fmt-${FMT_VERSION}/src/**/*", "fmt-${FMT_VERSION}/include/**/*", "Android.mk")
@@ -123,7 +120,7 @@ task downloadLibevent(dependsOn: createNativeDepsDirectories, type: Download) {
 
 
 final def prepareLibevent = tasks.register("prepareLibevent", PrepareLibeventTask) {
-    //it.dependsOn(dependenciesPath ? [] : [downloadLibevent])
+    it.dependsOn(dependenciesPath ? [] : [downloadLibevent])
     it.libeventPath.setFrom(dependenciesPath ?: tarTree(downloadLibevent.dest))
     it.libeventVersion.set(LIBEVENT_VERSION)
     it.outputDir.set(new File(thirdPartyNdkDir, "libevent"))
@@ -157,7 +154,7 @@ task downloadGlog(dependsOn: createNativeDepsDirectories, type: Download) {
 // Prepare glog sources to be compiled, this task will perform steps that normally should've been
 // executed by automake. This way we can avoid dependencies on make/automake
 final def prepareGlog = tasks.register("prepareGlog", PrepareGlogTask) {
-    //it.dependsOn(dependenciesPath ? [] : [downloadGlog])
+    it.dependsOn(dependenciesPath ? [] : [downloadGlog])
     it.glogPath.setFrom(dependenciesPath ?: tarTree(downloadGlog.dest))
     it.glogVersion.set(GLOG_VERSION)
     it.outputDir.set(new File(thirdPartyNdkDir, "glog"))
@@ -169,9 +166,7 @@ tasks.register('prepareJSC', PrepareJSCTask) {
     it.outputDir = project.layout.buildDirectory.dir("third-party-ndk/jsc")
 }
 
-// disabling download tasks for jenkins to build from local artifacts copied from dev machine
-
-/*task downloadNdkBuildDependencies {
+task downloadNdkBuildDependencies {
     if (!boostPath) {
         dependsOn(downloadBoost)
     }
@@ -180,7 +175,7 @@ tasks.register('prepareJSC', PrepareJSCTask) {
     dependsOn(downloadGlog)
     dependsOn(downloadFmt)
     dependsOn(downloadLibevent)
-}*/
+}
 
 /**
  * Finds the path of the installed npm package with the given name using Node's
@@ -279,8 +274,8 @@ task installArchives {
 
 // Creating sources with comments
 task androidSourcesJar(type: Jar) {
-  classifier = 'sources'
-  from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
 }
 
 android {
@@ -316,11 +311,11 @@ android {
         externalNativeBuild {
             ndkBuild {
                 arguments "NDK_APPLICATION_MK=$projectDir/src/main/jni/Application.mk",
-                        "THIRD_PARTY_NDK_DIR=$thirdPartyNdkDir",
-                        "REACT_COMMON_DIR=$projectDir/../ReactCommon",
-                        "REACT_GENERATED_SRC_DIR=$buildDir/generated/source",
-                        "REACT_SRC_DIR=$projectDir/src/main/java/com/facebook/react",
-                        "-j${ndkBuildJobs()}"
+                    "THIRD_PARTY_NDK_DIR=$thirdPartyNdkDir",
+                    "REACT_COMMON_DIR=$projectDir/../ReactCommon",
+                    "REACT_GENERATED_SRC_DIR=$buildDir/generated/source",
+                    "REACT_SRC_DIR=$projectDir/src/main/java/com/facebook/react",
+                    "-j${ndkBuildJobs()}"
 
                 if (Os.isFamily(Os.FAMILY_MAC)) {
                     // This flag will suppress "fcntl(): Bad file descriptor" warnings on local builds.
@@ -386,13 +381,7 @@ dependencies {
     api("androidx.appcompat:appcompat:1.0.2")
     api("androidx.autofill:autofill:1.1.0")
     api("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
-    api("com.facebook.fresco:fresco:${FRESCO_VERSION}"){
-        exclude group: 'com.facebook.soloader', module: 'soloader'
-        exclude group: 'com.facebook.fresco', module: 'soloader'
-        exclude group: 'com.facebook.fresco', module: 'nativeimagetranscoder'
-        exclude group: 'com.facebook.fresco', module: 'memory-type-native'
-        exclude group: 'com.facebook.fresco', module: 'imagepipeline-native'
-    }
+    api("com.facebook.fresco:fresco:${FRESCO_VERSION}")
     api("com.facebook.fresco:imagepipeline-okhttp3:${FRESCO_VERSION}")
     api("com.facebook.fresco:ui-common:${FRESCO_VERSION}")
     api("com.facebook.soloader:soloader:${SO_LOADER_VERSION}")
