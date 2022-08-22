@@ -43,13 +43,13 @@ import * as React from 'react';
 
 import {CellRenderMask} from './CellRenderMask';
 import clamp from '../Utilities/clamp';
+import StateSafePureComponent from './StateSafePureComponent';
 
 const RefreshControl = require('../Components/RefreshControl/RefreshControl');
 const ScrollView = require('../Components/ScrollView/ScrollView');
 const View = require('../Components/View/View');
 const Batchinator = require('../Interaction/Batchinator');
 const ReactNative = require('../Renderer/shims/ReactNative');
-const Platform = require('../Utilities/Platform');
 const flattenStyle = require('../StyleSheet/flattenStyle');
 const StyleSheet = require('../StyleSheet/StyleSheet');
 const infoLog = require('../Utilities/infoLog');
@@ -81,11 +81,6 @@ type State = {
  * Default Props Helper Functions
  * Use the following helper functions for default values
  */
-
-// numColumnsOrDefault(this.props.numColumns)
-function numColumnsOrDefault(numColumns: ?number) {
-  return numColumns ?? 1;
-}
 
 // horizontalOrDefault(this.props.horizontal)
 function horizontalOrDefault(horizontal: ?boolean) {
@@ -159,7 +154,7 @@ function findLastWhere<T>(
  * - As an effort to remove defaultProps, use helper functions when referencing certain props
  *
  */
-class VirtualizedList extends React.PureComponent<Props, State> {
+class VirtualizedList extends StateSafePureComponent<Props, State> {
   static contextType: typeof VirtualizedListContext = VirtualizedListContext;
 
   // scrollToEnd may be janky without getItemLayout prop
@@ -202,7 +197,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     viewOffset?: number,
     viewPosition?: number,
     ...
-  }) {
+  }): $FlowFixMe {
     const {
       data,
       horizontal,
@@ -389,6 +384,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     };
   }
 
+  // $FlowFixMe[missing-local-annot]
   _getScrollMetrics = () => {
     return this._scrollMetrics;
   };
@@ -397,6 +393,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     return this._hasMore;
   }
 
+  // $FlowFixMe[missing-local-annot]
   _getOutermostParentListRef = () => {
     if (this._isNestedWithSameOrientation()) {
       return this.context.getOutermostParentListRef();
@@ -849,6 +846,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
       keyExtractor?: ?(item: Item, index: number) => string,
       ...
     },
+    // $FlowFixMe[missing-local-annot]
   ) {
     if (props.keyExtractor != null) {
       return props.keyExtractor(item, index);
@@ -1180,6 +1178,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
   > = new Map();
   _offsetFromParentVirtualizedList: number = 0;
   _prevParentOffset: number = 0;
+  // $FlowFixMe[missing-local-annot]
   _scrollMetrics = {
     contentLength: 0,
     dOffset: 0,
@@ -1211,35 +1210,10 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     );
   }
 
-  _getCellsInItemCount = (props: Props) => {
-    const {getCellsInItemCount, data} = props;
-    if (getCellsInItemCount) {
-      return getCellsInItemCount(data);
-    }
-    if (Array.isArray(data)) {
-      return data.length;
-    }
-    return 0;
-  };
-
   /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
    * LTI update could not be added via codemod */
   _defaultRenderScrollComponent = props => {
-    const {getItemCount, data} = props;
     const onRefresh = props.onRefresh;
-    const numColumns = numColumnsOrDefault(props.numColumns);
-    const accessibilityRole = Platform.select({
-      android: numColumns > 1 ? 'grid' : 'list',
-    });
-    const rowCount = getItemCount(data);
-    const accessibilityCollection = {
-      // over-ride _getCellsInItemCount to handle Objects or other data formats
-      // see https://bit.ly/35RKX7H
-      itemCount: this._getCellsInItemCount(props),
-      rowCount,
-      columnCount: numColumns,
-      hierarchical: false,
-    };
     if (this._isNestedWithSameOrientation()) {
       // $FlowFixMe[prop-missing] - Typing ReactNativeComponent revealed errors
       return <View {...props} />;
@@ -1254,8 +1228,6 @@ class VirtualizedList extends React.PureComponent<Props, State> {
         // $FlowFixMe[prop-missing] Invalid prop usage
         <ScrollView
           {...props}
-          accessibilityRole={accessibilityRole}
-          accessibilityCollection={accessibilityCollection}
           refreshControl={
             props.refreshControl == null ? (
               <RefreshControl
@@ -1271,14 +1243,8 @@ class VirtualizedList extends React.PureComponent<Props, State> {
         />
       );
     } else {
-      return (
-        // $FlowFixMe[prop-missing] Invalid prop usage
-        <ScrollView
-          {...props}
-          accessibilityRole={accessibilityRole}
-          accessibilityCollection={accessibilityCollection}
-        />
-      );
+      // $FlowFixMe[prop-missing] Invalid prop usage
+      return <ScrollView {...props} />;
     }
   };
 
@@ -1442,6 +1408,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     this._headerLength = this._selectLength(e.nativeEvent.layout);
   };
 
+  // $FlowFixMe[missing-local-annot]
   _renderDebugOverlay() {
     const normalize =
       this._scrollMetrics.visibleLength /
@@ -1593,7 +1560,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     visibleLength: number,
     offset: number,
     ...
-  }) => {
+  }): $FlowFixMe => {
     // Offset of the top of the nested list relative to the top of its parent's viewport
     const offset = metrics.offset - this._offsetFromParentVirtualizedList;
     // Child's visible length is the same as its parent's
@@ -1797,6 +1764,7 @@ class VirtualizedList extends React.PureComponent<Props, State> {
     index: number,
     isViewable: boolean,
     props: FrameMetricProps,
+    // $FlowFixMe[missing-local-annot]
   ) => {
     const {data, getItem} = props;
     const item = getItem(data, index);
@@ -1986,6 +1954,7 @@ class CellRenderer extends React.Component<
   CellRendererProps,
   CellRendererState,
 > {
+  // $FlowFixMe[missing-local-annot]
   state = {
     separatorProps: {
       highlighted: false,
@@ -2007,6 +1976,7 @@ class CellRenderer extends React.Component<
 
   // TODO: consider factoring separator stuff out of VirtualizedList into FlatList since it's not
   // reused by SectionList and we can keep VirtualizedList simpler.
+  // $FlowFixMe[missing-local-annot]
   _separators = {
     highlight: () => {
       const {cellKey, prevCellKey} = this.props;
@@ -2053,6 +2023,7 @@ class CellRenderer extends React.Component<
     ListItemComponent: any,
     item: any,
     index: any,
+    // $FlowFixMe[missing-local-annot]
   ) {
     if (renderItem && ListItemComponent) {
       console.warn(
@@ -2076,19 +2047,10 @@ class CellRenderer extends React.Component<
     }
 
     if (renderItem) {
-      const accessibilityCollectionItem = {
-        itemIndex: index,
-        rowIndex: index,
-        rowSpan: 1,
-        columnIndex: 0,
-        columnSpan: 1,
-        heading: false,
-      };
       return renderItem({
         item,
         index,
         separators: this._separators,
-        accessibilityCollectionItem,
       });
     }
 
@@ -2098,6 +2060,7 @@ class CellRenderer extends React.Component<
     );
   }
 
+  // $FlowFixMe[missing-local-annot]
   render() {
     const {
       CellRendererComponent,
@@ -2241,4 +2204,5 @@ const styles = StyleSheet.create({
   },
 });
 
+VirtualizedList.displayName = 'VirtualizedList_EXPERIMENTAL';
 module.exports = VirtualizedList;
