@@ -169,7 +169,7 @@ public class NativeAnimatedModule extends NativeAnimatedModuleSpec
       }
     }
     catch (Exception e){
-      logException(w);
+      logException(e);
     }
   }
 
@@ -372,6 +372,7 @@ public class NativeAnimatedModule extends NativeAnimatedModuleSpec
     }
     catch (Exception e){
       logException(e);
+      return null;
     }
   }
 
