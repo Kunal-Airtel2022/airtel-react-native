@@ -10,6 +10,7 @@
 package com.facebook.react.modules.core;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.view.Choreographer;
 import com.facebook.react.bridge.UiThreadUtil;
 
@@ -34,7 +35,10 @@ public class ChoreographerCompat {
   }
 
   private ChoreographerCompat() {
-    mChoreographer = getChoreographer();
+    mHandler = new Handler(Looper.getMainLooper());
+    mHandler.post(
+      () -> mChoreographer = getChoreographer()
+    );
   }
 
   public void postFrameCallback(FrameCallback callbackWrapper) {
