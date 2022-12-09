@@ -90,18 +90,18 @@ class Scheduler final : public UIManagerDelegate {
   void uiManagerDidFinishTransaction(
       MountingCoordinator::Shared const &mountingCoordinator) override;
   void uiManagerDidCreateShadowNode(const ShadowNode &shadowNode) override;
-  void uiManagerDidCloneShadowNode(
-      const ShadowNode &oldShadowNode,
-      const ShadowNode &newShadowNode) override;
   void uiManagerDidDispatchCommand(
       const ShadowNode::Shared &shadowNode,
       std::string const &commandName,
       folly::dynamic const &args) override;
+  void setNativeProps_DEPRECATED(
+      const ShadowNode::Shared &shadowNode,
+      Props::Shared props) override;
   void uiManagerDidSendAccessibilityEvent(
       const ShadowNode::Shared &shadowNode,
       std::string const &eventType) override;
   void uiManagerDidSetIsJSResponder(
-      ShadowNode::Shared const &shadowView,
+      ShadowNode::Shared const &shadowNode,
       bool isJSResponder,
       bool blockNativeResponder) override;
 

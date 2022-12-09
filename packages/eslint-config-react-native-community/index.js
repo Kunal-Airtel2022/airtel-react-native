@@ -14,6 +14,9 @@ module.exports = {
 
   parserOptions: {
     sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true,
+    },
   },
 
   extends: ['plugin:prettier/recommended'],
@@ -23,7 +26,7 @@ module.exports = {
     'react',
     'react-hooks',
     'react-native',
-    '@react-native-community',
+    '@react-native',
     'jest',
   ],
 
@@ -47,13 +50,20 @@ module.exports = {
       },
     },
     {
+      files: ['*.jsx'],
+      parser: '@babel/eslint-parser',
+    },
+    {
       files: ['*.ts', '*.tsx'],
       parser: '@typescript-eslint/parser',
       plugins: ['@typescript-eslint/eslint-plugin'],
       rules: {
         '@typescript-eslint/no-unused-vars': [
           'error',
-          {argsIgnorePattern: '^_'},
+          {
+            argsIgnorePattern: '^_',
+            destructuredArrayIgnorePattern: '^_',
+          },
         ],
         'no-unused-vars': 'off',
         'no-shadow': 'off',

@@ -19,9 +19,9 @@ const EVENT_DEFINITION = `
   boolean_optional_both?: boolean | null | undefined;
 
   string_required: string;
-  string_optional_key?: string;
-  string_optional_value: string | null | undefined;
-  string_optional_both?: string | null | undefined;
+  string_optional_key?: (string);
+  string_optional_value: (string) | null | undefined;
+  string_optional_both?: (string | null | undefined);
 
   double_required: Double;
   double_optional_key?: Double;
@@ -452,6 +452,13 @@ export interface ModuleProps extends ViewProps {
   array_of_array_of_object_required_in_file: ReadonlyArray<
     ReadonlyArray<ObjectType>
   >;
+
+  // Nested array of array of object types (with spread)
+  array_of_array_of_object_required_with_spread: ReadonlyArray<
+    ReadonlyArray<
+      Readonly<ObjectType & {}>,
+    >,
+  >,
 }
 
 export default codegenNativeComponent<ModuleProps>(
@@ -584,6 +591,9 @@ export interface ModuleProps extends ViewProps {
 
   // Nested array of array of object types (in file)
   array_of_array_of_object_required_in_file: readonly ObjectType[][];
+
+  // Nested array of array of object types (with spread)
+  array_of_array_of_object_required_with_spread: readonly Readonly<ObjectType & {}>[][];
 }
 
 export default codegenNativeComponent<ModuleProps>(
@@ -764,23 +774,23 @@ export interface ModuleProps extends ViewProps {
     }>
   >;
 
-  onDirectEventDefinedInlineOptionalKey?: DirectEventHandler<
+  onDirectEventDefinedInlineOptionalKey?: (DirectEventHandler<
     Readonly<{
       ${EVENT_DEFINITION}
     }>
-  >;
+  >);
 
-  onDirectEventDefinedInlineOptionalValue: DirectEventHandler<
+  onDirectEventDefinedInlineOptionalValue: (DirectEventHandler<
     Readonly<{
       ${EVENT_DEFINITION}
     }>
-  > | null | undefined;
+  >) | null | undefined;
 
-  onDirectEventDefinedInlineOptionalBoth?: DirectEventHandler<
+  onDirectEventDefinedInlineOptionalBoth?: (DirectEventHandler<
     Readonly<{
       ${EVENT_DEFINITION}
     }>
-  > | null | undefined;
+  > | null | undefined);
 
   onDirectEventDefinedInlineWithPaperName?: DirectEventHandler<
     Readonly<{
@@ -857,12 +867,12 @@ export interface ModuleProps extends ViewProps {
     'paperDirectEventDefinedInlineNullWithPaperName'
   > | null | undefined;
 
-  onBubblingEventDefinedInlineNull: BubblingEventHandler<null>;
-  onBubblingEventDefinedInlineNullOptionalKey?: BubblingEventHandler<null>;
-  onBubblingEventDefinedInlineNullOptionalValue: BubblingEventHandler<null> | null | undefined;
-  onBubblingEventDefinedInlineNullOptionalBoth?: BubblingEventHandler<null> | null | undefined;
+  onBubblingEventDefinedInlineNull: BubblingEventHandler<undefined>;
+  onBubblingEventDefinedInlineNullOptionalKey?: BubblingEventHandler<undefined>;
+  onBubblingEventDefinedInlineNullOptionalValue: BubblingEventHandler<undefined> | null | undefined;
+  onBubblingEventDefinedInlineNullOptionalBoth?: BubblingEventHandler<undefined> | null | undefined;
   onBubblingEventDefinedInlineNullWithPaperName?: BubblingEventHandler<
-    null,
+  undefined,
     'paperBubblingEventDefinedInlineNullWithPaperName'
   > | null | undefined;
 }
@@ -971,13 +981,13 @@ type NativeType = HostComponent<ModuleProps>;
  interface NativeCommands {
    readonly handleRootTag: (viewRef: React.ElementRef<NativeType>, rootTag: RootTag) => void;
    readonly hotspotUpdate: (viewRef: React.ElementRef<NativeType>, x: Int32, y: Int32) => void;
-   readonly scrollTo: (
+   scrollTo(
      viewRef: React.ElementRef<NativeType>,
      x: Float,
      y: Int32,
      z: Double,
      animated: boolean,
-   ) => void;
+   ): void;
  }
 
  export const Commands = codegenNativeCommands<NativeCommands>({
@@ -1034,7 +1044,7 @@ export default codegenNativeComponent<ModuleProps>('Module') as NativeType;
 
 `;
 
-const COMMANDS_AND_EVENTS_TYPES_EXPORTED = `
+const COMMANDS_EVENTS_TYPES_EXPORTED = `
 /**
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
@@ -1071,6 +1081,13 @@ export interface ModuleProps extends ViewProps {
   onDirectEventDefinedInlineWithPaperName: DirectEventHandler<EventInFile, 'paperDirectEventDefinedInlineWithPaperName'>,
 }
 
+// Add state here
+export interface ModuleNativeState {
+  boolean_required: boolean,
+  boolean_optional_key?: WithDefault<boolean, true>,
+  boolean_optional_both?: WithDefault<boolean, true>,
+}
+
 type NativeType = HostComponent<ModuleProps>;
 
 export type ScrollTo = (viewRef: React.ElementRef<NativeType>, y: Int, animated: Boolean) => Void;
@@ -1088,6 +1105,49 @@ export default codegenNativeComponent<ModuleProps>(
 ) as NativeType;
 `;
 
+const PROPS_AND_EVENTS_WITH_INTERFACES = `
+import type {
+  BubblingEventHandler,
+  DirectEventHandler,
+  Int32,
+} from 'CodegenTypes';
+import type {ViewProps} from 'ViewPropTypes';
+import type {HostComponent} from 'react-native';
+
+const codegenNativeComponent = require('codegenNativeComponent');
+
+export interface Base1 {
+  readonly x: string;
+}
+
+export interface Base2 {
+  readonly y: Int32;
+}
+
+export interface Derived extends Base1, Base2 {
+  readonly z: boolean;
+}
+
+export interface ModuleProps extends ViewProps {
+  // Props
+  ordinary_prop: Derived;
+  readonly_prop: Readonly<Derived>;
+  ordinary_array_prop?: readonly Derived[];
+  readonly_array_prop?: readonly Readonly<Derived>[];
+  ordinary_nested_array_prop?: readonly Derived[][];
+  readonly_nested_array_prop?: readonly Readonly<Derived>[][];
+
+  // Events
+  onDirect: DirectEventHandler<Derived>;
+  onBubbling: BubblingEventHandler<Readonly<Derived>>;
+}
+
+export default codegenNativeComponent<ModuleProps>('Module', {
+  interfaceOnly: true,
+  paperComponentName: 'RCTModule',
+}) as HostComponent<ModuleProps>;
+`;
+
 module.exports = {
   ALL_PROP_TYPES_NO_EVENTS,
   ARRAY_PROP_TYPES_NO_EVENTS,
@@ -1100,8 +1160,9 @@ module.exports = {
   EVENTS_DEFINED_INLINE_WITH_ALL_TYPES,
   EVENTS_DEFINED_AS_NULL_INLINE,
   PROPS_AND_EVENTS_TYPES_EXPORTED,
-  COMMANDS_AND_EVENTS_TYPES_EXPORTED,
+  COMMANDS_EVENTS_TYPES_EXPORTED,
   COMMANDS_DEFINED_WITH_ALL_TYPES,
   PROPS_AS_EXTERNAL_TYPES,
   COMMANDS_WITH_EXTERNAL_TYPES,
+  PROPS_AND_EVENTS_WITH_INTERFACES,
 };

@@ -12,6 +12,7 @@
 #import <FBReactNativeSpec/FBReactNativeSpec.h>
 #import <React/RCTBridge+Private.h>
 #import <React/RCTBridgeModule.h>
+#import <React/RCTConstants.h>
 #import <React/RCTDevMenu.h>
 #import <React/RCTEventDispatcherProtocol.h>
 #import <React/RCTLog.h>
@@ -52,7 +53,7 @@ void RCTDevSettingsSetEnabled(BOOL enabled)
   devSettingsMenuEnabled = enabled;
 }
 
-#if RCT_DEV_MENU
+#if RCT_DEV_MENU || RCT_REMOTE_PROFILE
 
 @interface RCTDevSettingsUserDefaultsDataSource : NSObject <RCTDevSettingsDataSource>
 
@@ -617,7 +618,9 @@ RCT_EXPORT_METHOD(addMenuItem : (NSString *)title)
 
 - (RCTDevSettings *)devSettings
 {
-#if RCT_DEV_MENU
+#if RCT_REMOTE_PROFILE
+  return [self moduleForClass:[RCTDevSettings class]];
+#elif RCT_DEV_MENU
   return devSettingsMenuEnabled ? [self moduleForClass:[RCTDevSettings class]] : nil;
 #else
   return nil;

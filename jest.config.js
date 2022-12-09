@@ -15,8 +15,15 @@ module.exports = {
       '<rootDir>/jest/assetFileTransformer.js',
     '.*': './jest/private/preprocessor.js',
   },
-  setupFiles: ['./jest/setup.js'],
-  timers: 'fake',
+  setupFiles: ['./jest/local-setup.js'],
+  fakeTimers: {
+    enableGlobally: true,
+    legacyFakeTimers: true,
+  },
+  snapshotFormat: {
+    escapeString: true,
+    printBasicPrototype: true,
+  },
   testRegex: '/__tests__/.*-test\\.js$',
   testPathIgnorePatterns: [
     '/node_modules/',

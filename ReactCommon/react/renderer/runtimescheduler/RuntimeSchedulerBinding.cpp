@@ -6,16 +6,15 @@
  */
 
 #include "RuntimeSchedulerBinding.h"
-#include "SchedulerPriority.h"
+#include <ReactCommon/SchedulerPriority.h>
+#include "SchedulerPriorityUtils.h"
 #include "primitives.h"
 
-#include <react/debug/react_native_assert.h>
 #include <chrono>
 #include <memory>
 #include <utility>
 
-namespace facebook {
-namespace react {
+namespace facebook::react {
 
 std::shared_ptr<RuntimeSchedulerBinding>
 RuntimeSchedulerBinding::createAndInstallIfNeeded(
@@ -116,7 +115,7 @@ jsi::Value RuntimeSchedulerBinding::get(
             jsi::Value const *,
             size_t) noexcept -> jsi::Value {
           auto shouldYield = runtimeScheduler_->getShouldYield();
-          return jsi::Value(shouldYield);
+          return {shouldYield};
         });
   }
 
@@ -148,7 +147,7 @@ jsi::Value RuntimeSchedulerBinding::get(
           auto asDouble =
               std::chrono::duration<double, std::milli>(now.time_since_epoch())
                   .count();
-          return jsi::Value(asDouble);
+          return {asDouble};
         });
   }
 
@@ -201,5 +200,4 @@ jsi::Value RuntimeSchedulerBinding::get(
 #endif
 }
 
-} // namespace react
-} // namespace facebook
+} // namespace facebook::react

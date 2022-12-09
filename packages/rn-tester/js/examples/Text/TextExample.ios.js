@@ -453,7 +453,7 @@ class TextRenderInfoExample extends React.Component<
                 this.setState({textMetrics: lines[lines.length - 1]});
               }
             }}>
-            {new Array(this.state.numberOfTextBlocks)
+            {new Array<string>(this.state.numberOfTextBlocks)
               .fill('A tiny block of text.')
               .join(' ')}
           </Text>
@@ -681,6 +681,15 @@ exports.examples = [
           <Text style={{fontWeight: '300'}}>FONT WEIGHT 300</Text>
           <Text style={{fontWeight: '200'}}>FONT WEIGHT 200</Text>
           <Text style={{fontWeight: '100'}}>FONT WEIGHT 100</Text>
+          <Text style={{fontWeight: 900}}>FONT WEIGHT 900</Text>
+          <Text style={{fontWeight: 800}}>FONT WEIGHT 800</Text>
+          <Text style={{fontWeight: 700}}>FONT WEIGHT 700</Text>
+          <Text style={{fontWeight: 600}}>FONT WEIGHT 600</Text>
+          <Text style={{fontWeight: 500}}>FONT WEIGHT 500</Text>
+          <Text style={{fontWeight: 400}}>FONT WEIGHT 400</Text>
+          <Text style={{fontWeight: 300}}>FONT WEIGHT 300</Text>
+          <Text style={{fontWeight: 200}}>FONT WEIGHT 200</Text>
+          <Text style={{fontWeight: 100}}>FONT WEIGHT 100</Text>
         </View>
       );
     },
@@ -1223,6 +1232,98 @@ exports.examples = [
               a<Text style={{textTransform: 'none'}}>b</Text>c
             </Text>
           </Text>
+        </View>
+      );
+    },
+  },
+  {
+    title: 'Selectable Text',
+    render: function (): React.Node {
+      return (
+        <View>
+          <Text style={{userSelect: 'auto'}}>Text element is selectable</Text>
+        </View>
+      );
+    },
+  },
+  {
+    title: 'Line Break Strategy',
+    render: function (): React.Node {
+      const lineBreakStrategy = ['none', 'standard', 'hangul-word', 'push-out'];
+      const textByCode = {
+        en: 'lineBreakStrategy lineBreakStrategy lineBreakStrategy lineBreakStrategy',
+        ko: '한글개행 한글개행 한글개행 한글개행 한글개행 한글개행 한글개행 한글개행',
+        ja: 'かいぎょう かいぎょう かいぎょう かいぎょう かいぎょう かいぎょう',
+        cn: '改行 改行 改行 改行 改行 改行 改行 改行 改行 改行 改行 改行',
+      };
+
+      return (
+        <View>
+          {lineBreakStrategy.map(strategy => {
+            return (
+              <View key={strategy} style={{marginBottom: 12}}>
+                <Text
+                  style={{
+                    backgroundColor: 'lightgrey',
+                  }}>{`Strategy: ${strategy}`}</Text>
+                {Object.keys(textByCode).map(code => {
+                  return (
+                    <View key={code}>
+                      <Text style={{fontWeight: 'bold'}}>{`[${code}]`}</Text>
+                      <Text lineBreakStrategyIOS={strategy}>
+                        {textByCode[code]}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
+            );
+          })}
+        </View>
+      );
+    },
+  },
+  {
+    title: 'Dynamic Type (iOS only)',
+    render: function (): React.Node {
+      const boldStyle = {fontWeight: 'bold'};
+      const boxStyle = {
+        borderWidth: 1,
+        padding: 8,
+        margin: 8,
+      };
+      return (
+        <View style={{marginTop: 10, marginBottom: 10}}>
+          <Text>
+            Adjust text size in Accessibility settings and watch how the font
+            sizes change relative to each other.
+          </Text>
+          <View style={boxStyle}>
+            <Text style={boldStyle}>With `dynamicTypeRamp`:</Text>
+            <Text style={{fontSize: 34}} dynamicTypeRamp="largeTitle">
+              Large Title
+            </Text>
+            <Text style={{fontSize: 28}} dynamicTypeRamp="title1">
+              Title
+            </Text>
+            <Text style={{fontSize: 22}} dynamicTypeRamp="title2">
+              Title 2
+            </Text>
+            <Text style={{fontSize: 20}} dynamicTypeRamp="title3">
+              Title 3
+            </Text>
+            <Text style={{fontSize: 17}} dynamicTypeRamp="body">
+              Body
+            </Text>
+          </View>
+          <View style={boxStyle}>
+            <Text style={boldStyle}>Without `dynamicTypeRamp`:</Text>
+            <Text style={{fontSize: 34}}>Large Title</Text>
+            <Text style={{fontSize: 28}}>Title</Text>
+            <Text style={{fontSize: 22}}>Title 2</Text>
+            <Text style={{fontSize: 20}}>Title 3</Text>
+            <Text style={{fontSize: 17}}>Body</Text>
+          </View>
         </View>
       );
     },

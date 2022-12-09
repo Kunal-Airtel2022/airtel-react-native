@@ -299,6 +299,40 @@ class DisplayNoneStyle extends React.Component<
     this.setState({index: this.state.index + 1});
   };
 }
+
+class FlexGapExample extends React.Component<$ReadOnly<{||}>> {
+  render(): React.Node {
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          borderWidth: 1,
+          rowGap: 20,
+          columnGap: 30,
+        }}>
+        <View style={{backgroundColor: 'black', height: 30, width: 30}} />
+        <View style={{backgroundColor: 'black', height: 30, width: 30}} />
+        <View
+          style={{
+            backgroundColor: 'pink',
+            height: 30,
+            flexBasis: 30,
+          }}
+        />
+        <View style={{backgroundColor: 'black', height: 30, width: 30}} />
+        <View style={{backgroundColor: 'black', height: 30, width: 30}} />
+        <View style={{backgroundColor: 'black', height: 30, width: 30}} />
+        <View style={{backgroundColor: 'black', height: 30, width: 30}} />
+        <View style={{backgroundColor: 'pink', height: 30, width: 30}} />
+        <View style={{backgroundColor: 'pink', height: 30, width: 30}} />
+        <View style={{backgroundColor: 'pink', height: 30, width: 30}} />
+        <View style={{backgroundColor: 'pink', height: 30, width: 30}} />
+      </View>
+    );
+  }
+}
+
 exports.title = 'View';
 exports.documentationURL = 'https://reactnative.dev/docs/view';
 exports.category = 'Basic';
@@ -598,6 +632,24 @@ exports.examples = [
           </View>
         </>
       );
+    },
+  },
+  {
+    title: 'View with aria-label="label"',
+    render(): React.Node {
+      return (
+        <View
+          aria-label="Blue background View with Text"
+          style={{backgroundColor: '#527FE4', padding: 5}}>
+          <Text style={{fontSize: 11}}>Blue background</Text>
+        </View>
+      );
+    },
+  },
+  {
+    title: 'FlexGap',
+    render(): React.Node {
+      return <FlexGapExample />;
     },
   },
 ];

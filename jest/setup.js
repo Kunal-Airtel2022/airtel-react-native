@@ -12,8 +12,8 @@
 const MockNativeMethods = jest.requireActual('./MockNativeMethods');
 const mockComponent = jest.requireActual('./mockComponent');
 
-jest.requireActual('@react-native/polyfills/Object.es8');
-jest.requireActual('@react-native/polyfills/error-guard');
+jest.requireActual('@react-native/js-polyfills/Object.es8');
+jest.requireActual('@react-native/js-polyfills/error-guard');
 
 global.__DEV__ = true;
 
@@ -21,7 +21,6 @@ global.performance = {
   now: jest.fn(Date.now),
 };
 
-global.Promise = jest.requireActual('promise');
 global.regeneratorRuntime = jest.requireActual('regenerator-runtime/runtime');
 global.window = global;
 
@@ -128,12 +127,17 @@ jest
       isGrayscaleEnabled: jest.fn(),
       isInvertColorsEnabled: jest.fn(),
       isReduceMotionEnabled: jest.fn(),
+      prefersCrossFadeTransitions: jest.fn(),
       isReduceTransparencyEnabled: jest.fn(),
       isScreenReaderEnabled: jest.fn(() => Promise.resolve(false)),
       setAccessibilityFocus: jest.fn(),
       sendAccessibilityEvent: jest.fn(),
       getRecommendedTimeoutMillis: jest.fn(),
     },
+  }))
+  .mock('../Libraries/Components/Clipboard/Clipboard', () => ({
+    getString: jest.fn(() => ''),
+    setString: jest.fn(),
   }))
   .mock('../Libraries/Components/RefreshControl/RefreshControl', () =>
     jest.requireActual(
@@ -201,10 +205,6 @@ jest
         process.nextTick(() => callback(null, [])),
       ),
     },
-    Clipboard: {
-      getString: jest.fn(() => ''),
-      setString: jest.fn(),
-    },
     DeviceInfo: {
       getConstants() {
         return {
@@ -230,7 +230,7 @@ jest
       reload: jest.fn(),
     },
     ImageLoader: {
-      getSize: jest.fn(url => Promise.resolve({width: 320, height: 240})),
+      getSize: jest.fn(url => Promise.resolve([320, 240])),
       prefetchImage: jest.fn(),
     },
     ImageViewManager: {

@@ -52,6 +52,8 @@ ANDROID = "Android"
 
 APPLE = "Apple"
 
+WINDOWS = "Windows"
+
 # Apple SDK Definitions
 IOS = "ios"
 
@@ -144,7 +146,7 @@ def rn_xplat_cxx_library(
         **kwargs
     )
 
-rn_xplat_cxx_library2 = rn_xplat_cxx_library
+rn_apple_xplat_cxx_library = rn_xplat_cxx_library
 
 # Example: react_native_target('java/com/facebook/react/common:common')
 def react_native_target(path):
@@ -162,6 +164,9 @@ def react_native_root_target(path):
 
 def react_native_xplat_shared_library_target(path):
     return react_native_xplat_target(path)
+
+def react_native_desktop_root_target(path):
+    return "//" + path
 
 # Example: react_native_tests_target('java/com/facebook/react/modules:modules')
 def react_native_tests_target(path):
@@ -192,7 +197,6 @@ def _unique(li):
 # React property preprocessor
 def rn_android_library(name, deps = [], plugins = [], *args, **kwargs):
     _ = kwargs.pop("autoglob", False)
-    _ = kwargs.pop("is_androidx", False)
     _ = kwargs.pop("pure_kotlin", False)
     if react_native_target(
         "java/com/facebook/react/uimanager/annotations:annotations",
@@ -238,7 +242,6 @@ def rn_apple_library(*args, **kwargs):
     fb_apple_library(*args, **kwargs)
 
 def rn_java_library(*args, **kwargs):
-    _ = kwargs.pop("is_androidx", False)
     native.java_library(*args, **kwargs)
 
 def rn_java_annotation_processor(*args, **kwargs):
@@ -257,7 +260,6 @@ def rn_robolectric_test(name, srcs, vm_args = None, *args, **kwargs):
     vm_args = vm_args or []
 
     _ = kwargs.pop("autoglob", False)
-    _ = kwargs.pop("is_androidx", False)
 
     kwargs["deps"] = kwargs.pop("deps", []) + [
         react_native_android_toplevel_dep("third-party/java/mockito2:mockito2"),
@@ -399,6 +401,7 @@ def fb_apple_library(*args, **kwargs):
     _ = kwargs.pop("plugins", [])
     _ = kwargs.pop("complete_nullability", False)
     _ = kwargs.pop("plugins_header", "")
+    _ = kwargs.pop("disable_infer_precompiled_header", False)
 
     native.apple_library(*args, **kwargs)
 

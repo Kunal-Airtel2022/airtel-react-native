@@ -4,23 +4,23 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @format
  * @flow
- * @emails oncall+react_native
+ * @format
+ * @oncall react_native
  */
 
 'use strict';
 
+const VirtualizedSectionList = require('../VirtualizedSectionList');
 const React = require('react');
 const ReactTestRenderer = require('react-test-renderer');
-
-const VirtualizedSectionList = require('../VirtualizedSectionList');
 
 describe('VirtualizedSectionList', () => {
   it('renders simple list', () => {
     const component = ReactTestRenderer.create(
       <VirtualizedSectionList
         sections={[
+          // $FlowFixMe[incompatible-type]
           {title: 's1', data: [{key: 'i1'}, {key: 'i2'}, {key: 'i3'}]},
         ]}
         renderItem={({item}) => <item value={item.key} />}
@@ -61,6 +61,7 @@ describe('VirtualizedSectionList', () => {
   it('renders list with empty component', () => {
     const component = ReactTestRenderer.create(
       <VirtualizedSectionList
+        // $FlowFixMe[incompatible-type]
         sections={[{title: 's1', data: [{key: 'hello'}]}]}
         ListEmptyComponent={() => <empty />}
         getItem={(data, key) => data[key]}
@@ -79,9 +80,10 @@ describe('VirtualizedSectionList', () => {
         ListFooterComponent={() => <footer />}
         ListHeaderComponent={() => <header />}
         sections={[
+          // $FlowFixMe[incompatible-type]
           {
             title: 's1',
-            data: new Array(5).fill().map((_, ii) => ({id: String(ii)})),
+            data: new Array<void>(5).fill().map((_, ii) => ({id: String(ii)})),
           },
         ]}
         getItem={(data, key) => data[key]}
@@ -109,6 +111,7 @@ describe('VirtualizedSectionList', () => {
         <VirtualizedSectionList
           ItemSeparatorComponent={props => <separator {...props} />}
           sections={[
+            // $FlowFixMe[incompatible-type]
             {title: 's0', data: [{key: 'i0'}, {key: 'i1'}, {key: 'i2'}]},
           ]}
           renderItem={info => {
@@ -139,10 +142,12 @@ describe('VirtualizedSectionList', () => {
   it('handles nested lists', () => {
     const component = ReactTestRenderer.create(
       <VirtualizedSectionList
+        // $FlowFixMe[incompatible-type]
         sections={[{title: 'outer', data: [{key: 'outer0'}, {key: 'outer1'}]}]}
         renderItem={outerInfo => (
           <VirtualizedSectionList
             sections={[
+              // $FlowFixMe[incompatible-type]
               {
                 title: 'inner',
                 data: [
@@ -169,13 +174,15 @@ describe('VirtualizedSectionList', () => {
   describe('scrollToLocation', () => {
     const ITEM_HEIGHT = 100;
 
-    const createVirtualizedSectionList = (
-      props: void | $TEMPORARY$object<{stickySectionHeadersEnabled: boolean}>,
-    ) => {
+    const createVirtualizedSectionList = (props?: {
+      stickySectionHeadersEnabled: boolean,
+    }) => {
       const component = ReactTestRenderer.create(
         <VirtualizedSectionList
           sections={[
+            // $FlowFixMe[incompatible-type]
             {title: 's1', data: [{key: 'i1.1'}, {key: 'i1.2'}, {key: 'i1.3'}]},
+            // $FlowFixMe[incompatible-type]
             {title: 's2', data: [{key: 'i2.1'}, {key: 'i2.2'}, {key: 'i2.3'}]},
           ]}
           renderItem={({item}) => <item value={item.key} />}

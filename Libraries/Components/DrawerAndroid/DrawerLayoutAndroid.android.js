@@ -8,28 +8,27 @@
  * @format
  */
 
-import Platform from '../../Utilities/Platform';
-import * as React from 'react';
-import StatusBar from '../StatusBar/StatusBar';
+import type {AccessibilityRole} from '../../Components/View/ViewAccessibility';
+import type {
+  MeasureInWindowOnSuccessCallback,
+  MeasureLayoutOnSuccessCallback,
+  MeasureOnSuccessCallback,
+} from '../../Renderer/shims/ReactNativeTypes';
+import type {ColorValue, ViewStyleProp} from '../../StyleSheet/StyleSheet';
+import type {DirectEventHandler} from '../../Types/CodegenTypes';
+
 import StyleSheet from '../../StyleSheet/StyleSheet';
-import View from '../View/View';
-
 import dismissKeyboard from '../../Utilities/dismissKeyboard';
-import nullthrows from 'nullthrows';
-
+import Platform from '../../Utilities/Platform';
+import StatusBar from '../StatusBar/StatusBar';
+import View from '../View/View';
 import AndroidDrawerLayoutNativeComponent, {
   Commands,
 } from './AndroidDrawerLayoutNativeComponent';
+import nullthrows from 'nullthrows';
+import * as React from 'react';
 
 const DRAWER_STATES = ['Idle', 'Dragging', 'Settling'];
-
-import type {ColorValue, ViewStyleProp} from '../../StyleSheet/StyleSheet';
-import type {DirectEventHandler} from '../../Types/CodegenTypes';
-import type {
-  MeasureOnSuccessCallback,
-  MeasureInWindowOnSuccessCallback,
-  MeasureLayoutOnSuccessCallback,
-} from '../../Renderer/shims/ReactNativeTypes';
 
 type DrawerStates = 'Idle' | 'Dragging' | 'Settling';
 
@@ -38,6 +37,8 @@ type DrawerSlideEvent = $ReadOnly<{|
 |}>;
 
 type Props = $ReadOnly<{|
+  accessibilityRole?: ?AccessibilityRole,
+
   /**
    * Determines whether the keyboard gets dismissed in response to a drag.
    *   - 'none' (the default), drags do not dismiss the keyboard.

@@ -24,7 +24,7 @@ const path = require('path');
 const RN_ROOT = path.join(__dirname, '../..');
 
 const CODEGEN_REPO_PATH = `${RN_ROOT}/packages/react-native-codegen`;
-const CODEGEN_NPM_PATH = `${RN_ROOT}/../react-native-codegen`;
+const CODEGEN_NPM_PATH = `${RN_ROOT}/../@react-native/codegen`;
 const CORE_LIBRARIES = new Set(['rncore', 'FBReactNativeSpec']);
 const REACT_NATIVE_DEPENDENCY_NAME = 'react-native';
 
@@ -204,6 +204,55 @@ function handleThirdPartyLibraries(
   });
 }
 
+function handleLibrariesFromReactNativeConfig(
+  libraries,
+  codegenConfigKey,
+  codegenConfigFilename,
+  appRootDir,
+) {
+  const rnConfigFileName = 'react-native.config.js';
+
+  console.log(
+    `\n\n[Codegen] >>>>> Searching for codegen-enabled libraries in ${rnConfigFileName}`,
+  );
+
+  const rnConfigFilePath = path.resolve(appRootDir, rnConfigFileName);
+
+  if (fs.existsSync(rnConfigFilePath)) {
+    const rnConfig = require(rnConfigFilePath);
+
+    if (rnConfig.dependencies != null) {
+      Object.keys(rnConfig.dependencies).forEach(name => {
+        const dependencyConfig = rnConfig.dependencies[name];
+
+        if (dependencyConfig.root) {
+          const codegenConfigFileDir = path.resolve(
+            appRootDir,
+            dependencyConfig.root,
+          );
+          const configFilePath = path.join(
+            codegenConfigFileDir,
+            codegenConfigFilename,
+          );
+          const pkgJsonPath = path.join(codegenConfigFileDir, 'package.json');
+
+          if (fs.existsSync(configFilePath)) {
+            const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath));
+            const configFile = JSON.parse(fs.readFileSync(configFilePath));
+            extractLibrariesFromJSON(
+              configFile,
+              libraries,
+              codegenConfigKey,
+              pkgJson.name,
+              codegenConfigFileDir,
+            );
+          }
+        }
+      });
+    }
+  }
+}
+
 function handleInAppLibraries(
   libraries,
   pkgJson,
@@ -270,7 +319,7 @@ function generateSchema(tmpDir, library, node, codegenCliPath) {
       'cli',
       'combine',
       'combine-js-to-schema-cli.js',
-    )} ${pathToSchema} ${pathToJavaScriptSources}`,
+    )} --platform ios ${pathToSchema} ${pathToJavaScriptSources}`,
   );
   console.log(`[Codegen] Generated schema: ${pathToSchema}`);
   return pathToSchema;
@@ -362,6 +411,39 @@ function createComponentProvider(
   }
 }
 
+function findCodegenEnabledLibraries(
+  appRootDir,
+  baseCodegenConfigFileDir,
+  codegenConfigFilename,
+  codegenConfigKey,
+) {
+  const pkgJson = readPackageJSON(appRootDir);
+  const dependencies = {...pkgJson.dependencies, ...pkgJson.devDependencies};
+  const libraries = [];
+
+  handleReactNativeCodeLibraries(
+    libraries,
+    codegenConfigFilename,
+    codegenConfigKey,
+  );
+  handleThirdPartyLibraries(
+    libraries,
+    baseCodegenConfigFileDir,
+    dependencies,
+    codegenConfigFilename,
+    codegenConfigKey,
+  );
+  handleLibrariesFromReactNativeConfig(
+    libraries,
+    codegenConfigKey,
+    codegenConfigFilename,
+    appRootDir,
+  );
+  handleInAppLibraries(libraries, pkgJson, codegenConfigKey, appRootDir);
+
+  return libraries;
+}
+
 // It removes all the empty files and empty folders
 // it finds, starting from `filepath`, recursively.
 //
@@ -429,23 +511,12 @@ function execute(
   }
 
   try {
-    const pkgJson = readPackageJSON(appRootDir);
-    const dependencies = {...pkgJson.dependencies, ...pkgJson.devDependencies};
-    const libraries = [];
-
-    handleReactNativeCodeLibraries(
-      libraries,
-      codegenConfigFilename,
-      codegenConfigKey,
-    );
-    handleThirdPartyLibraries(
-      libraries,
+    const libraries = findCodegenEnabledLibraries(
+      appRootDir,
       baseCodegenConfigFileDir,
-      dependencies,
       codegenConfigFilename,
       codegenConfigKey,
     );
-    handleInAppLibraries(libraries, pkgJson, codegenConfigKey, appRootDir);
 
     if (libraries.length === 0) {
       console.log('[Codegen] No codegen-enabled libraries found.');
@@ -482,6 +553,7 @@ module.exports = {
   execute: execute,
   // exported for testing purposes only:
   _extractLibrariesFromJSON: extractLibrariesFromJSON,
+  _findCodegenEnabledLibraries: findCodegenEnabledLibraries,
   _executeNodeScript: executeNodeScript,
   _generateCode: generateCode,
   _cleanupEmptyFilesAndFolders: cleanupEmptyFilesAndFolders,

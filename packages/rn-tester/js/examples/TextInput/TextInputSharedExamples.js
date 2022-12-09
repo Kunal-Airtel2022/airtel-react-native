@@ -192,17 +192,14 @@ class RewriteInvalidCharactersAndClearExample extends React.Component<
   }
 }
 
+type ExampleRef = {current: null | {focus(): void, ...}};
+
 class BlurOnSubmitExample extends React.Component<{...}> {
-  // $FlowFixMe[missing-local-annot]
-  ref1 = React.createRef();
-  // $FlowFixMe[missing-local-annot]
-  ref2 = React.createRef();
-  // $FlowFixMe[missing-local-annot]
-  ref3 = React.createRef();
-  // $FlowFixMe[missing-local-annot]
-  ref4 = React.createRef();
-  // $FlowFixMe[missing-local-annot]
-  ref5 = React.createRef();
+  ref1: ExampleRef = React.createRef();
+  ref2: ExampleRef = React.createRef();
+  ref3: ExampleRef = React.createRef();
+  ref4: ExampleRef = React.createRef();
+  ref5: ExampleRef = React.createRef();
 
   render(): React.Node {
     return (
@@ -254,28 +251,17 @@ class BlurOnSubmitExample extends React.Component<{...}> {
 }
 
 class SubmitBehaviorExample extends React.Component<{...}> {
-  // $FlowFixMe[missing-local-annot]
-  ref1 = React.createRef();
-  // $FlowFixMe[missing-local-annot]
-  ref2 = React.createRef();
-  // $FlowFixMe[missing-local-annot]
-  ref3 = React.createRef();
-  // $FlowFixMe[missing-local-annot]
-  ref4 = React.createRef();
-  // $FlowFixMe[missing-local-annot]
-  ref5 = React.createRef();
-  // $FlowFixMe[missing-local-annot]
-  ref6 = React.createRef();
-  // $FlowFixMe[missing-local-annot]
-  ref7 = React.createRef();
-  // $FlowFixMe[missing-local-annot]
-  ref8 = React.createRef();
-  // $FlowFixMe[missing-local-annot]
-  ref9 = React.createRef();
-  // $FlowFixMe[missing-local-annot]
-  ref10 = React.createRef();
-  // $FlowFixMe[missing-local-annot]
-  ref11 = React.createRef();
+  ref1: ExampleRef = React.createRef();
+  ref2: ExampleRef = React.createRef();
+  ref3: ExampleRef = React.createRef();
+  ref4: ExampleRef = React.createRef();
+  ref5: ExampleRef = React.createRef();
+  ref6: ExampleRef = React.createRef();
+  ref7: ExampleRef = React.createRef();
+  ref8: ExampleRef = React.createRef();
+  ref9: ExampleRef = React.createRef();
+  ref10: ExampleRef = React.createRef();
+  ref11: ExampleRef = React.createRef();
 
   render(): React.Node {
     return (
@@ -722,9 +708,56 @@ module.exports = ([
     },
   },
   {
+    title: 'Input modes',
+    name: 'inputModes',
+    render: function (): React.Node {
+      const inputMode = [
+        'none',
+        'text',
+        'decimal',
+        'numeric',
+        'tel',
+        'search',
+        'email',
+        'url',
+      ];
+      const examples = inputMode.map(mode => {
+        return (
+          <WithLabel key={mode} label={mode}>
+            <TextInput inputMode={mode} style={styles.default} />
+          </WithLabel>
+        );
+      });
+      return <View>{examples}</View>;
+    },
+  },
+  {
     title: 'Blur on submit',
     render: function (): React.Element<any> {
       return <BlurOnSubmitExample />;
+    },
+  },
+  {
+    title: 'enterKeyHint modes',
+    name: 'enterKeyHintTypes',
+    render: function (): React.Node {
+      const enterKeyHintTypesHints = [
+        'enter',
+        'done',
+        'go',
+        'next',
+        'previous',
+        'search',
+        'send',
+      ];
+      const examples = enterKeyHintTypesHints.map(hint => {
+        return (
+          <WithLabel key={hint} label={hint}>
+            <TextInput enterKeyHint={hint} style={styles.default} />
+          </WithLabel>
+        );
+      });
+      return <View>{examples}</View>;
     },
   },
   {

@@ -82,6 +82,7 @@ import com.facebook.react.config.ReactFeatureFlags;
 import com.facebook.react.devsupport.DevSupportManagerFactory;
 import com.facebook.react.devsupport.ReactInstanceDevHelper;
 import com.facebook.react.devsupport.interfaces.DevBundleDownloadListener;
+import com.facebook.react.devsupport.interfaces.DevLoadingViewManager;
 import com.facebook.react.devsupport.interfaces.DevSupportManager;
 import com.facebook.react.devsupport.interfaces.PackagerStatusCallback;
 import com.facebook.react.devsupport.interfaces.RedBoxHandler;
@@ -99,7 +100,6 @@ import com.facebook.react.turbomodule.core.TurboModuleManagerDelegate;
 import com.facebook.react.turbomodule.core.interfaces.TurboModuleRegistry;
 import com.facebook.react.uimanager.DisplayMetricsHolder;
 import com.facebook.react.uimanager.ReactRoot;
-import com.facebook.react.uimanager.UIImplementationProvider;
 import com.facebook.react.uimanager.UIManagerHelper;
 import com.facebook.react.uimanager.ViewManager;
 import com.facebook.react.views.imagehelper.ResourceDrawableIdHelper;
@@ -225,7 +225,6 @@ public class ReactInstanceManager {
       boolean requireActivity,
       @Nullable NotThreadSafeBridgeIdleDebugListener bridgeIdleDebugListener,
       LifecycleState initialLifecycleState,
-      @Nullable UIImplementationProvider mUIImplementationProvider,
       JSExceptionHandler jSExceptionHandler,
       @Nullable RedBoxHandler redBoxHandler,
       boolean lazyViewManagersEnabled,
@@ -235,7 +234,8 @@ public class ReactInstanceManager {
       @Nullable JSIModulePackage jsiModulePackage,
       @Nullable Map<String, RequestHandler> customPackagerCommandHandlers,
       @Nullable ReactPackageTurboModuleManagerDelegate.Builder tmmDelegateBuilder,
-      @Nullable SurfaceDelegateFactory surfaceDelegateFactory) {
+      @Nullable SurfaceDelegateFactory surfaceDelegateFactory,
+      @Nullable DevLoadingViewManager devLoadingViewManager) {
     FLog.d(TAG, "ReactInstanceManager.ctor()");
     initializeSoLoaderIfNecessary(applicationContext);
 
@@ -263,7 +263,8 @@ public class ReactInstanceManager {
             devBundleDownloadListener,
             minNumShakes,
             customPackagerCommandHandlers,
-            surfaceDelegateFactory);
+            surfaceDelegateFactory,
+            devLoadingViewManager);
     Systrace.endSection(TRACE_TAG_REACT_JAVA_BRIDGE);
     mBridgeIdleDebugListener = bridgeIdleDebugListener;
     mLifecycleState = initialLifecycleState;
@@ -282,7 +283,6 @@ public class ReactInstanceManager {
                   ReactInstanceManager.this.invokeDefaultOnBackPressed();
                 }
               },
-              mUIImplementationProvider,
               lazyViewManagersEnabled,
               minTimeLeftInFrameForNonBatchedOperationMs));
       if (mUseDeveloperSupport) {
@@ -964,39 +964,43 @@ public class ReactInstanceManager {
 
   public Collection<String> getViewManagerNames() {
     Systrace.beginSection(TRACE_TAG_REACT_JAVA_BRIDGE, "ReactInstanceManager.getViewManagerNames");
-    Collection<String> viewManagerNames = mViewManagerNames;
-    if (viewManagerNames != null) {
-      return viewManagerNames;
-    }
-    ReactApplicationContext context;
-    synchronized (mReactContextLock) {
-      context = (ReactApplicationContext) getCurrentReactContext();
-      if (context == null || !context.hasActiveReactInstance()) {
-        return Collections.emptyList();
+    try {
+      Collection<String> viewManagerNames = mViewManagerNames;
+      if (viewManagerNames != null) {
+        return viewManagerNames;
       }
-    }
-
-    synchronized (mPackages) {
-      if (mViewManagerNames == null) {
-        Set<String> uniqueNames = new HashSet<>();
-        for (ReactPackage reactPackage : mPackages) {
-          SystraceMessage.beginSection(
-                  TRACE_TAG_REACT_JAVA_BRIDGE, "ReactInstanceManager.getViewManagerName")
-              .arg("Package", reactPackage.getClass().getSimpleName())
-              .flush();
-          if (reactPackage instanceof ViewManagerOnDemandReactPackage) {
-            Collection<String> names =
-                ((ViewManagerOnDemandReactPackage) reactPackage).getViewManagerNames(context);
-            if (names != null) {
-              uniqueNames.addAll(names);
-            }
-          }
-          SystraceMessage.endSection(TRACE_TAG_REACT_JAVA_BRIDGE).flush();
+      ReactApplicationContext context;
+      synchronized (mReactContextLock) {
+        context = (ReactApplicationContext) getCurrentReactContext();
+        if (context == null || !context.hasActiveReactInstance()) {
+          FLog.w(ReactConstants.TAG, "Calling getViewManagerNames without active context");
+          return Collections.emptyList();
         }
-        Systrace.endSection(TRACE_TAG_REACT_JAVA_BRIDGE);
-        mViewManagerNames = uniqueNames;
       }
-      return mViewManagerNames;
+
+      synchronized (mPackages) {
+        if (mViewManagerNames == null) {
+          Set<String> uniqueNames = new HashSet<>();
+          for (ReactPackage reactPackage : mPackages) {
+            SystraceMessage.beginSection(
+                    TRACE_TAG_REACT_JAVA_BRIDGE, "ReactInstanceManager.getViewManagerName")
+                .arg("Package", reactPackage.getClass().getSimpleName())
+                .flush();
+            if (reactPackage instanceof ViewManagerOnDemandReactPackage) {
+              Collection<String> names =
+                  ((ViewManagerOnDemandReactPackage) reactPackage).getViewManagerNames(context);
+              if (names != null) {
+                uniqueNames.addAll(names);
+              }
+            }
+            Systrace.endSection(TRACE_TAG_REACT_JAVA_BRIDGE);
+          }
+          mViewManagerNames = uniqueNames;
+        }
+        return mViewManagerNames;
+      }
+    } finally {
+      Systrace.endSection(TRACE_TAG_REACT_JAVA_BRIDGE);
     }
   }
 
@@ -1260,7 +1264,6 @@ public class ReactInstanceManager {
                   : Arguments.fromBundle(initialProperties),
               reactRoot.getWidthMeasureSpec(),
               reactRoot.getHeightMeasureSpec());
-      reactRoot.setRootViewTag(rootTag);
       reactRoot.setShouldLogContentAppeared(true);
     } else {
       rootTag =

@@ -36,15 +36,6 @@ class SchedulerDelegateProxy : public SchedulerDelegate {
     // This delegate method is not currently used on iOS.
   }
 
-  void schedulerDidCloneShadowNode(
-      SurfaceId surfaceId,
-      const ShadowNode &oldShadowNode,
-      const ShadowNode &newShadowNode) override
-  {
-    // Does nothing.
-    // This delegate method is not currently used on iOS.
-  }
-
   void schedulerDidDispatchCommand(
       const ShadowView &shadowView,
       const std::string &commandName,
@@ -52,6 +43,12 @@ class SchedulerDelegateProxy : public SchedulerDelegate {
   {
     RCTScheduler *scheduler = (__bridge RCTScheduler *)scheduler_;
     [scheduler.delegate schedulerDidDispatchCommand:shadowView commandName:commandName args:args];
+  }
+
+  void setNativeProps_DEPRECATED(const ShadowView &shadowView, Props::Shared props) override
+  {
+    RCTScheduler *scheduler = (__bridge RCTScheduler *)scheduler_;
+    [scheduler.delegate setNativeProps_DEPRECATED:shadowView withProps:std::move(props)];
   }
 
   void schedulerDidSetIsJSResponder(ShadowView const &shadowView, bool isJSResponder, bool blockNativeResponder)

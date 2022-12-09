@@ -4,8 +4,8 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @emails react_native
  * @format
+ * @oncall react_native
  */
 
 'use strict';
@@ -26,7 +26,7 @@ let RNParserUtils;
 
 function requireModuleParser() {
   if (RNModuleParser == null || RNParserUtils == null) {
-    // If using this externally, we leverage react-native-codegen as published form
+    // If using this externally, we leverage @react-native/codegen as published form
     if (!PACKAGE_USAGE) {
       const config = {
         only: [/react-native-codegen\/src\//],
@@ -34,18 +34,18 @@ function requireModuleParser() {
       };
 
       withBabelRegister(config, () => {
-        RNModuleParser = require('react-native-codegen/src/parsers/flow/modules');
-        RNParserUtils = require('react-native-codegen/src/parsers/flow/utils');
+        RNModuleParser = require('@react-native/codegen/src/parsers/flow/modules');
+        RNParserUtils = require('@react-native/codegen/src/parsers/utils');
       });
     } else {
       const config = {
-        only: [/react-native-codegen\/lib\//],
+        only: [/@react-native\/codegen\/lib\//],
         plugins: [require('@babel/plugin-transform-flow-strip-types').default],
       };
 
       withBabelRegister(config, () => {
-        RNModuleParser = require('react-native-codegen/lib/parsers/flow/modules');
-        RNParserUtils = require('react-native-codegen/lib/parsers/flow/utils');
+        RNModuleParser = require('@react-native/codegen/lib/parsers/flow/modules');
+        RNParserUtils = require('@react-native/codegen/lib/parsers/flow/utils');
       });
     }
   }
@@ -134,7 +134,7 @@ function rule(context) {
       const [parsingErrors, tryParse] = createParserErrorCapturer();
 
       const sourceCode = context.getSourceCode().getText();
-      const ast = flowParser.parse(sourceCode);
+      const ast = flowParser.parse(sourceCode, {enums: true});
 
       tryParse(() => {
         buildModuleSchema(hasteModuleName, ast, tryParse);

@@ -10,10 +10,11 @@
 
 'use strict';
 
+import type {PressEvent} from '../Types/CoreEventTypes';
+import type {PanResponderType} from './PanResponder.flow.js';
+
 const InteractionManager = require('./InteractionManager');
 const TouchHistoryMath = require('./TouchHistoryMath');
-
-import type {PressEvent} from '../Types/CoreEventTypes';
 
 const currentCentroidXOfTouchesChangedAfter =
   TouchHistoryMath.currentCentroidXOfTouchesChangedAfter;
@@ -190,7 +191,7 @@ type ActiveCallback = (
 
 type PassiveCallback = (event: PressEvent, gestureState: GestureState) => mixed;
 
-type PanHandlers = {|
+export type PanHandlers = {|
   onMoveShouldSetResponder: (event: PressEvent) => boolean,
   onMoveShouldSetResponderCapture: (event: PressEvent) => boolean,
   onResponderEnd: (event: PressEvent) => void,
@@ -226,7 +227,7 @@ type PanResponderConfig = $ReadOnly<{|
   onShouldBlockNativeResponder?: ?ActiveCallback,
 |}>;
 
-const PanResponder = {
+const PanResponder: PanResponderType = {
   /**
    *
    * A graphical explanation of the touch data flow:
@@ -398,10 +399,10 @@ const PanResponder = {
    *  accordingly. (numberActiveTouches) may not be totally accurate unless you
    *  are the responder.
    */
-  create(config: PanResponderConfig): $TEMPORARY$object<{|
+  create(config: PanResponderConfig): {
     getInteractionHandle: () => ?number,
     panHandlers: PanHandlers,
-  |}> {
+  } {
     const interactionState = {
       handle: (null: ?number),
     };

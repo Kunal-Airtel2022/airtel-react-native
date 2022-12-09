@@ -33,21 +33,21 @@ class UIManagerDelegate {
   virtual void uiManagerDidCreateShadowNode(const ShadowNode &shadowNode) = 0;
 
   /*
-   * Called each time when UIManager clones a Shadow Node. Receiver
-   * might use this to optimistically allocate a new native view
-   * instances.
-   */
-  virtual void uiManagerDidCloneShadowNode(
-      const ShadowNode &oldShadowNode,
-      const ShadowNode &newShadowNode) = 0;
-
-  /*
    * Called when UIManager wants to dispatch a command to the mounting layer.
    */
   virtual void uiManagerDidDispatchCommand(
       const ShadowNode::Shared &shadowNode,
       std::string const &commandName,
       folly::dynamic const &args) = 0;
+
+  /*
+   * Called when UIManager wants directly manipulate view on the mounting layer.
+   * This is a backport of setNativeProps from the old architecture and will be
+   * removed in the future.
+   */
+  virtual void setNativeProps_DEPRECATED(
+      const ShadowNode::Shared &shadowNode,
+      Props::Shared props) = 0;
 
   /*
    * Called when UIManager wants to dispatch some accessibility event
