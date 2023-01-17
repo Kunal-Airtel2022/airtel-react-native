@@ -295,6 +295,8 @@ android {
         ndkVersion rootProject.ext.ndkVersion
     }
 
+    println("ndk: "+ ndkVersion)
+
     defaultConfig {
         minSdkVersion(21)
         targetSdkVersion(31)

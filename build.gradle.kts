@@ -23,6 +23,8 @@ buildscript {
     }
 }
 
+println("ndk: "+ndkVersion)
+
 allprojects {
     repositories {
         maven {
