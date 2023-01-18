@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * {@link ReactShadowNode} abstract class for spannable text nodes.
@@ -190,6 +191,10 @@ public abstract class ReactBaseTextShadowNode extends LayoutShadowNode {
             new SetSpanOperation(
                 start, end, new ReactBackgroundColorSpan(textShadowNode.mBackgroundColor)));
       }
+      if (textShadowNode.mIsAccessibilityLink) {
+        ops.add(
+            new SetSpanOperation(start, end, new ReactClickableSpan(textShadowNode.getReactTag())));
+      }
       float effectiveLetterSpacing = textAttributes.getEffectiveLetterSpacing();
       if (!Float.isNaN(effectiveLetterSpacing)
           && (parentTextAttributes == null
@@ -331,6 +336,7 @@ public abstract class ReactBaseTextShadowNode extends LayoutShadowNode {
   protected int mColor;
   protected boolean mIsBackgroundColorSet = false;
   protected int mBackgroundColor;
+  protected boolean mIsAccessibilityLink = false;
 
   protected int mNumberOfLines = UNSET;
   protected int mTextAlign = Gravity.NO_GRAVITY;
@@ -498,6 +504,14 @@ public abstract class ReactBaseTextShadowNode extends LayoutShadowNode {
       if (mIsBackgroundColorSet) {
         mBackgroundColor = color;
       }
+      markUpdated();
+    }
+  }
+
+  @ReactProp(name = ViewProps.ACCESSIBILITY_ROLE)
+  public void setIsAccessibilityLink(@Nullable String accessibilityRole) {
+    if (isVirtual()) {
+      mIsAccessibilityLink = Objects.equals(accessibilityRole, "link");
       markUpdated();
     }
   }

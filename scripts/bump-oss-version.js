@@ -14,16 +14,14 @@
  * This script walks a releaser through bumping the version for a release
  * It will commit the appropriate tags to trigger the CircleCI jobs.
  */
-const {exec, exit} = require('shelljs');
+const {exit} = require('shelljs');
 const yargs = require('yargs');
 const inquirer = require('inquirer');
 const request = require('request');
+const {getBranchName, exitIfNotOnGit} = require('./scm-utils');
 
-const {
-  parseVersion,
-  isReleaseBranch,
-  getBranchName,
-} = require('./version-utils');
+const {parseVersion, isReleaseBranch} = require('./version-utils');
+const {failIfTagExists} = require('./release-utils');
 
 let argv = yargs
   .option('r', {
@@ -42,7 +40,10 @@ let argv = yargs
     required: true,
   })
   .check(() => {
-    const branch = getBranchName();
+    const branch = exitIfNotOnGit(
+      () => getBranchName(),
+      "Not in git. You can't invoke bump-oss-versions.js from outside a git repo.",
+    );
     exitIfNotOnReleaseBranch(branch);
     return true;
   }).argv;
@@ -54,19 +55,6 @@ function exitIfNotOnReleaseBranch(branch) {
     );
     exit(1);
   }
-}
-
-function getLatestTag(versionPrefix) {
-  const tags = exec(`git tag --list "v${versionPrefix}*" --sort=-refname`, {
-    silent: true,
-  })
-    .stdout.trim()
-    .split('\n')
-    .filter(tag => tag.length > 0);
-  if (tags.length > 0) {
-    return tags[0];
-  }
-  return null;
 }
 
 function triggerReleaseWorkflow(options) {
@@ -82,9 +70,13 @@ function triggerReleaseWorkflow(options) {
 }
 
 async function main() {
-  const branch = getBranchName();
+  const branch = exitIfNotOnGit(
+    () => getBranchName(),
+    "Not in git. You can't invoke bump-oss-versions.js from outside a git repo.",
+  );
   const token = argv.token;
   const releaseVersion = argv.toVersion;
+  failIfTagExists(releaseVersion, 'release');
 
   const {pushed} = await inquirer.prompt({
     type: 'confirm',
@@ -99,7 +91,7 @@ async function main() {
   }
 
   let latest = false;
-  const {version, prerelease} = parseVersion(releaseVersion);
+  const {version, prerelease} = parseVersion(releaseVersion, 'release');
   if (!prerelease) {
     const {setLatest} = await inquirer.prompt({
       type: 'confirm',
