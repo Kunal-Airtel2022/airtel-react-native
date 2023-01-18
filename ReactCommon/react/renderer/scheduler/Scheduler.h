@@ -94,9 +94,6 @@ class Scheduler final : public UIManagerDelegate {
       const ShadowNode::Shared &shadowNode,
       std::string const &commandName,
       folly::dynamic const &args) override;
-  void setNativeProps_DEPRECATED(
-      const ShadowNode::Shared &shadowNode,
-      Props::Shared props) override;
   void uiManagerDidSendAccessibilityEvent(
       const ShadowNode::Shared &shadowNode,
       std::string const &eventType) override;
@@ -146,6 +143,7 @@ class Scheduler final : public UIManagerDelegate {
    * Temporary flags.
    */
   bool removeOutstandingSurfacesOnDestruction_{false};
+  bool reduceDeleteCreateMutationLayoutAnimation_{false};
 };
 
 } // namespace react

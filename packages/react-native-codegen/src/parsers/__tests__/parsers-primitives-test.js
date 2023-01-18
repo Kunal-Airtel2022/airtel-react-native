@@ -362,6 +362,7 @@ describe('emitPromise', () => {
       /* aliasMap: {...NativeModuleAliasMap} */
       {},
       /* tryParse: ParserErrorCapturer */
+      // $FlowFixMe[missing-local-annot]
       function <T>(_: () => T) {
         return null;
       },
@@ -672,7 +673,6 @@ describe('emitUnion', () => {
             hasteModuleName,
             typeAnnotation,
             unionTypes,
-            flowParser.language(),
           );
 
           expect(() => {
@@ -687,7 +687,6 @@ describe('emitUnion', () => {
             hasteModuleName,
             typeAnnotation,
             unionTypes,
-            flowParser.language(),
           );
 
           expect(() => {
@@ -887,7 +886,6 @@ describe('emitUnion', () => {
             hasteModuleName,
             typeAnnotation,
             unionTypes,
-            typeScriptParser.language(),
           );
 
           expect(() => {
@@ -902,7 +900,6 @@ describe('emitUnion', () => {
             hasteModuleName,
             typeAnnotation,
             unionTypes,
-            typeScriptParser.language(),
           );
 
           expect(() => {

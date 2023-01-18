@@ -118,18 +118,23 @@ Scheduler::Scheduler(
     uiManager->registerCommitHook(*commitHook);
   }
 
-  if (animationDelegate != nullptr) {
-    animationDelegate->setComponentDescriptorRegistry(
-        componentDescriptorRegistry_);
-  }
-  uiManager_->setAnimationDelegate(animationDelegate);
-
 #ifdef ANDROID
   removeOutstandingSurfacesOnDestruction_ = true;
+  reduceDeleteCreateMutationLayoutAnimation_ = reactNativeConfig_->getBool(
+      "react_fabric:reduce_delete_create_mutation_layout_animation_android");
 #else
   removeOutstandingSurfacesOnDestruction_ = reactNativeConfig_->getBool(
       "react_fabric:remove_outstanding_surfaces_on_destruction_ios");
+  reduceDeleteCreateMutationLayoutAnimation_ = true;
 #endif
+
+  if (animationDelegate != nullptr) {
+    animationDelegate->setComponentDescriptorRegistry(
+        componentDescriptorRegistry_);
+    animationDelegate->setReduceDeleteCreateMutation(
+        reduceDeleteCreateMutationLayoutAnimation_);
+  }
+  uiManager_->setAnimationDelegate(animationDelegate);
 }
 
 Scheduler::~Scheduler() {
@@ -318,17 +323,6 @@ void Scheduler::uiManagerDidDispatchCommand(
   if (delegate_ != nullptr) {
     auto shadowView = ShadowView(*shadowNode);
     delegate_->schedulerDidDispatchCommand(shadowView, commandName, args);
-  }
-}
-
-void Scheduler::setNativeProps_DEPRECATED(
-    const ShadowNode::Shared &shadowNode,
-    Props::Shared props) {
-  SystraceSection s("Scheduler::setNativeProps_DEPRECATED");
-
-  if (delegate_ != nullptr) {
-    auto shadowView = ShadowView(*shadowNode);
-    delegate_->setNativeProps_DEPRECATED(shadowView, std::move(props));
   }
 }
 
