@@ -354,8 +354,8 @@ public class NativeAnimatedModule extends NativeAnimatedModuleSpec
         }
       }
 
-      executeAllOperations(mPreOperations, batchNumber);
-      executeAllOperations(mOperations, batchNumber);
+      mPreOperations.executeBatch(batchNumber, getNodesManager());
+      mOperations.executeBatch(batchNumber, getNodesManager());
     }
     catch (Exception e){
       logException(e);

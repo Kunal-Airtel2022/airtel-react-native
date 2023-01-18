@@ -166,8 +166,8 @@ public class NativeAnimatedNodesManager implements EventDispatcherListener {
   public void updateAnimatedNodeConfig(int tag, ReadableMap config) {
     AnimatedNode node = mAnimatedNodes.get(tag);
     if (node == null) {
-      throw new JSApplicationIllegalArgumentException(
-          "updateAnimatedNode: Animated node [" + tag + "] does not exist");
+      logException(new JSApplicationIllegalArgumentException(
+          "updateAnimatedNode: Animated node [" + tag + "] does not exist"));
     }
 
     if (node instanceof AnimatedNodeWithUpdateableConfig) {
@@ -963,7 +963,7 @@ public class NativeAnimatedNodesManager implements EventDispatcherListener {
           // or fix the root cause
           ReactSoftExceptionLogger.logSoftException(TAG, new ReactNoCrashSoftException(ex));
         } else {
-          throw ex;
+          logException(ex);
         }
       } else {
         mWarnedAboutGraphTraversal = false;
