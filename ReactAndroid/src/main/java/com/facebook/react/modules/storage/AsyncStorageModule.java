@@ -12,10 +12,12 @@ import static com.facebook.react.modules.storage.ReactDatabaseSupplier.TABLE_CAT
 import static com.facebook.react.modules.storage.ReactDatabaseSupplier.VALUE_COLUMN;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteStatement;
 import android.os.AsyncTask;
 import com.facebook.common.logging.FLog;
 import com.facebook.fbreact.specs.NativeAsyncSQLiteDBStorageSpec;
+import com.facebook.logger.AirtelLogger;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.GuardedAsyncTask;
@@ -235,6 +237,10 @@ public final class AsyncStorageModule extends NativeAsyncSQLiteDBStorageSpec
             statement.execute();
           }
           mReactDatabaseSupplier.get().setTransactionSuccessful();
+        } catch (SQLiteException exc) {
+          try {
+            AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(), new SQLiteException("AsyncStorageModule " + exc.getMessage()));
+          } catch (Exception ignored) {}
         } catch (Exception e) {
           FLog.w(ReactConstants.TAG, e.getMessage(), e);
           error = AsyncStorageErrorUtil.getError(null, e.getMessage());
