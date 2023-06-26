@@ -352,7 +352,7 @@ public class ReactScrollView extends ScrollView
       // this is the commonly accepted workaround.
       // https://tinyurl.com/mw6qkod (Stack Overflow)
       FLog.w(ReactConstants.TAG, "Error intercepting touch event.", e);
-    }
+    } catch (ArrayIndexOutOfBoundsException ignored) {}
 
     return false;
   }

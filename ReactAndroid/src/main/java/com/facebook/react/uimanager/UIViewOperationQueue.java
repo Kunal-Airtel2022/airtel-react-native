@@ -889,7 +889,9 @@ public class UIViewOperationQueue {
                       // they're executed too soon.
                       if (op.getRetries() == 0) {
                         op.incrementRetries();
-                        mViewCommandOperations.add(op);
+                        try {
+                          mViewCommandOperations.add(op);
+                        } catch (NullPointerException ignored) {}
                       } else {
                         // Retryable exceptions should be logged, but never crash in debug.
                         ReactSoftExceptionLogger.logSoftException(
