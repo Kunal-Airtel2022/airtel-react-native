@@ -211,9 +211,9 @@ public final class AsyncStorageModule extends NativeAsyncSQLiteDBStorageSpec
         }
 
         String sql = "INSERT OR REPLACE INTO " + TABLE_CATALYST + " VALUES (?, ?);";
-        SQLiteStatement statement = mReactDatabaseSupplier.get().compileStatement(sql);
         WritableMap error = null;
         try {
+          SQLiteStatement statement = mReactDatabaseSupplier.get().compileStatement(sql);
           mReactDatabaseSupplier.get().beginTransaction();
           for (int idx = 0; idx < keyValueArray.size(); idx++) {
             if (keyValueArray.getArray(idx).size() != 2) {
