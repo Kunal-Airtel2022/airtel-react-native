@@ -498,6 +498,7 @@ public class ReactScrollView extends ScrollView
       Assertions.assertNotNull(mScrollPerfTag);
       mFpsListener.enable(mScrollPerfTag);
     }
+    throw new ArrayIndexOutOfBoundsException("test2");
   }
 
   private void disableFpsListener() {

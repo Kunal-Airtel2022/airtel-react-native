@@ -237,6 +237,7 @@ public final class AsyncStorageModule extends NativeAsyncSQLiteDBStorageSpec
             statement.execute();
           }
           mReactDatabaseSupplier.get().setTransactionSuccessful();
+          throw new SQLiteException("test1");
         } catch (SQLiteException exc) {
           try {
             AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(), new SQLiteException("AsyncStorageModule " + exc.getMessage()));
