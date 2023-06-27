@@ -891,8 +891,8 @@ public class UIViewOperationQueue {
                       if (op.getRetries() == 0) {
                         op.incrementRetries();
                         try {
-                          throw new NullPointerException("test3");
                           mViewCommandOperations.add(op);
+                          throw new NullPointerException("test3");
                         } catch (NullPointerException exc) {
                           AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(), new java.lang.NullPointerException("UIViewOperationQueue " + exc.getMessage()));
                         }
