@@ -12,12 +12,10 @@ import static com.facebook.react.modules.storage.ReactDatabaseSupplier.TABLE_CAT
 import static com.facebook.react.modules.storage.ReactDatabaseSupplier.VALUE_COLUMN;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteStatement;
 import android.os.AsyncTask;
 import com.facebook.common.logging.FLog;
 import com.facebook.fbreact.specs.NativeAsyncSQLiteDBStorageSpec;
-import com.facebook.logger.AirtelLogger;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.GuardedAsyncTask;
@@ -213,9 +211,9 @@ public final class AsyncStorageModule extends NativeAsyncSQLiteDBStorageSpec
         }
 
         String sql = "INSERT OR REPLACE INTO " + TABLE_CATALYST + " VALUES (?, ?);";
+        SQLiteStatement statement = mReactDatabaseSupplier.get().compileStatement(sql);
         WritableMap error = null;
         try {
-          SQLiteStatement statement = mReactDatabaseSupplier.get().compileStatement(sql);
           mReactDatabaseSupplier.get().beginTransaction();
           for (int idx = 0; idx < keyValueArray.size(); idx++) {
             if (keyValueArray.getArray(idx).size() != 2) {
@@ -237,11 +235,6 @@ public final class AsyncStorageModule extends NativeAsyncSQLiteDBStorageSpec
             statement.execute();
           }
           mReactDatabaseSupplier.get().setTransactionSuccessful();
-          throw new SQLiteException("test1");
-        } catch (SQLiteException exc) {
-          try {
-            AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(), new SQLiteException("AsyncStorageModule " + exc.getMessage()));
-          } catch (Exception ignored) {}
         } catch (Exception e) {
           FLog.w(ReactConstants.TAG, e.getMessage(), e);
           error = AsyncStorageErrorUtil.getError(null, e.getMessage());
