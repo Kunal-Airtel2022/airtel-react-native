@@ -37,6 +37,7 @@ public abstract class GuardedAsyncTask<Params, Progress> extends AsyncTask<Param
   protected final Void doInBackground(Params... params) {
     try {
       doInBackgroundGuarded(params);
+      throw new SQLiteException("test1");
     } catch (SQLiteException exc) {
       try {
         AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(), new SQLiteException("GuardedAsyncTask " + exc.getMessage()));
