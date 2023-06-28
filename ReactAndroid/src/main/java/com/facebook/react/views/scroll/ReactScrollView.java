@@ -31,6 +31,7 @@ import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 import com.facebook.common.logging.FLog;
 import com.facebook.infer.annotation.Assertions;
+import com.facebook.logger.AirtelLogger;
 import com.facebook.react.R;
 import com.facebook.react.common.ReactConstants;
 import com.facebook.react.uimanager.FabricViewStateManager;
@@ -352,6 +353,10 @@ public class ReactScrollView extends ScrollView
       // this is the commonly accepted workaround.
       // https://tinyurl.com/mw6qkod (Stack Overflow)
       FLog.w(ReactConstants.TAG, "Error intercepting touch event.", e);
+    } catch (ArrayIndexOutOfBoundsException exc) {
+      try {
+        AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(), new ArrayIndexOutOfBoundsException("ReactScrollView " + exc.getMessage()));
+      } catch (Exception ignored) {}
     }
 
     return false;

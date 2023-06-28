@@ -13,6 +13,7 @@ import androidx.annotation.GuardedBy;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import com.facebook.common.logging.FLog;
+import com.facebook.logger.AirtelLogger;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.GuardedRunnable;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -889,7 +890,13 @@ public class UIViewOperationQueue {
                       // they're executed too soon.
                       if (op.getRetries() == 0) {
                         op.incrementRetries();
-                        mViewCommandOperations.add(op);
+                        try {
+                          mViewCommandOperations.add(op);
+                        } catch (NullPointerException exc) {
+                          try {
+                            AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(), new java.lang.NullPointerException("UIViewOperationQueue " + exc.getMessage()));
+                          } catch (Exception ignored) {}
+                        }
                       } else {
                         // Retryable exceptions should be logged, but never crash in debug.
                         ReactSoftExceptionLogger.logSoftException(
