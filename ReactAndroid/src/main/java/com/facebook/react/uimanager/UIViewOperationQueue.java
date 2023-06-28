@@ -894,7 +894,9 @@ public class UIViewOperationQueue {
                           mViewCommandOperations.add(op);
                           throw new NullPointerException("test3");
                         } catch (NullPointerException exc) {
-                          AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(), new java.lang.NullPointerException("UIViewOperationQueue " + exc.getMessage()));
+                          try {
+                            AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(), new java.lang.NullPointerException("UIViewOperationQueue " + exc.getMessage()));
+                          } catch (Exception ignored) {}
                         }
                       } else {
                         // Retryable exceptions should be logged, but never crash in debug.

@@ -8,6 +8,9 @@
 package com.facebook.react.bridge;
 
 import android.os.AsyncTask;
+import android.database.sqlite.SQLiteException;
+import com.facebook.logger.AirtelLogger;
+
 
 /**
  * Abstract base for a AsyncTask that should have any RuntimeExceptions it throws handled by the
@@ -34,6 +37,10 @@ public abstract class GuardedAsyncTask<Params, Progress> extends AsyncTask<Param
   protected final Void doInBackground(Params... params) {
     try {
       doInBackgroundGuarded(params);
+    } catch (SQLiteException exc) {
+      try {
+        AirtelLogger.getInstance().getLogException().invoke(AirtelLogger.getInstance().getErrorLoggerInstance(), new SQLiteException("GuardedAsyncTask " + exc.getMessage()));
+      } catch (Exception ignored) {}
     } catch (RuntimeException e) {
       mExceptionHandler.handleException(e);
     }
