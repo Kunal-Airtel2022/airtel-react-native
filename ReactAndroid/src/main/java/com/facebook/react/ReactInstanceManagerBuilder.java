@@ -311,6 +311,8 @@ public class ReactInstanceManagerBuilder {
     String appName = mApplication.getPackageName();
     String deviceName = getFriendlyDeviceName();
 
+    Log.e("rendering-timestamp","ARN RIMB onBuild "+System.currentTimeMillis())
+
     return new ReactInstanceManager(
         mApplication,
         mCurrentActivity,
