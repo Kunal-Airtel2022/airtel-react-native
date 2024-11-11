@@ -40,6 +40,7 @@ import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Process;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.Nullable;
@@ -443,6 +444,7 @@ public class ReactInstanceManager {
   @ThreadConfined(UI)
   private void recreateReactContextInBackgroundInner() {
     FLog.d(TAG, "ReactInstanceManager.recreateReactContextInBackgroundInner()");
+    Log.e("rendering-timestamp","ARN RIM recreateReactContextInBackgroundInner "+System.currentTimeMillis());
     PrinterHolder.getPrinter()
         .logMessage(ReactDebugOverlayTags.RN_CORE, "RNCore: recreateReactContextInBackground");
     UiThreadUtil.assertOnUiThread();
@@ -490,6 +492,7 @@ public class ReactInstanceManager {
   @ThreadConfined(UI)
   private void recreateReactContextInBackgroundFromBundleLoader() {
     FLog.d(TAG, "ReactInstanceManager.recreateReactContextInBackgroundFromBundleLoader()");
+    Log.e("rendering-timestamp","ARN RIM recreateReactContextInBackgroundFromBundleLoader "+System.currentTimeMillis());
     PrinterHolder.getPrinter()
         .logMessage(ReactDebugOverlayTags.RN_CORE, "RNCore: load from BundleLoader");
     recreateReactContextInBackground(mJavaScriptExecutorFactory, mBundleLoader);
@@ -533,7 +536,7 @@ public class ReactInstanceManager {
   /** This method will give JS the opportunity to receive intents via Linking. */
   @ThreadConfined(UI)
   public void onNewIntent(Intent intent) {
-    Log.e("rendering-timestamp","ARN RIM onNewIntent "+System.currentTimeMillis())
+    Log.e("rendering-timestamp","ARN RIM onNewIntent "+System.currentTimeMillis());
     UiThreadUtil.assertOnUiThread();
     ReactContext currentContext = getCurrentReactContext();
     if (currentContext == null) {
@@ -552,7 +555,7 @@ public class ReactInstanceManager {
         }
       }
       currentContext.onNewIntent(mCurrentActivity, intent);
-      Log.e("rendering-timestamp","ARN RIM onNewIntent 2 "+System.currentTimeMillis())
+      Log.e("rendering-timestamp","ARN RIM onNewIntent 2 "+System.currentTimeMillis());
     }
   }
 
@@ -629,17 +632,17 @@ public class ReactInstanceManager {
   public void onHostResume(
       @Nullable Activity activity, DefaultHardwareBackBtnHandler defaultBackButtonImpl) {
     UiThreadUtil.assertOnUiThread();
-    Log.e("rendering-timestamp","ARN RIM onHostResume "+System.currentTimeMillis())
+    Log.e("rendering-timestamp","ARN RIM onHostResume "+System.currentTimeMillis());
 
     mDefaultBackButtonImpl = defaultBackButtonImpl;
     onHostResume(activity);
-    Log.e("rendering-timestamp","ARN RIM onHostResume 2 "+System.currentTimeMillis())
+    Log.e("rendering-timestamp","ARN RIM onHostResume 2 "+System.currentTimeMillis());
   }
 
   /** Use this method when the activity resumes. */
   @ThreadConfined(UI)
   public void onHostResume(@Nullable Activity activity) {
-    Log.e("rendering-timestamp","ARN RIM onHostResume 1"+System.currentTimeMillis())
+    Log.e("rendering-timestamp","ARN RIM onHostResume 1"+System.currentTimeMillis());
     UiThreadUtil.assertOnUiThread();
 
     mCurrentActivity = activity;
@@ -685,7 +688,7 @@ public class ReactInstanceManager {
     }
 
     moveToResumedLifecycleState(false);
-    Log.e("rendering-timestamp","ARN RIM onHostResume 21 "+System.currentTimeMillis())
+    Log.e("rendering-timestamp","ARN RIM onHostResume 21 "+System.currentTimeMillis());
   }
 
   /**
@@ -782,6 +785,7 @@ public class ReactInstanceManager {
 
   private synchronized void moveToResumedLifecycleState(boolean force) {
     ReactContext currentContext = getCurrentReactContext();
+    Log.e("rendering-timestamp","ARN RIM moveToResumedLifecycleState "+System.currentTimeMillis());
     if (currentContext != null) {
       // we currently don't have an onCreate callback so we call onResume for both transitions
       if (force
@@ -837,7 +841,7 @@ public class ReactInstanceManager {
 
   @ThreadConfined(UI)
   public void onWindowFocusChange(boolean hasFocus) {
-    Log.e("rendering-timestamp","ARN RIM onWindowFocusChange "+System.currentTimeMillis())
+    Log.e("rendering-timestamp","ARN RIM onWindowFocusChange "+System.currentTimeMillis());
     UiThreadUtil.assertOnUiThread();
     ReactContext currentContext = getCurrentReactContext();
     if (currentContext != null) {
@@ -848,6 +852,7 @@ public class ReactInstanceManager {
   /** Call this from {@link Activity#onConfigurationChanged()}. */
   @ThreadConfined(UI)
   public void onConfigurationChanged(Context updatedContext, @Nullable Configuration newConfig) {
+    Log.e("rendering-timestamp","ARN RIM onConfigurationChanged "+System.currentTimeMillis());
     UiThreadUtil.assertOnUiThread();
 
     ReactContext currentReactContext = getCurrentReactContext();
@@ -886,7 +891,7 @@ public class ReactInstanceManager {
    */
   @ThreadConfined(UI)
   public void attachRootView(ReactRoot reactRoot) {
-    Log.e("rendering-timestamp","ARN RIM attachRootView "+System.currentTimeMillis())
+    Log.e("rendering-timestamp","ARN RIM attachRootView "+System.currentTimeMillis());
     UiThreadUtil.assertOnUiThread();
 
     // Calling clearReactRoot is necessary to initialize the Id on reactRoot
@@ -905,7 +910,7 @@ public class ReactInstanceManager {
         attachRootViewToInstance(reactRoot);
       }
     }
-    Log.e("rendering-timestamp","ARN RIM attachRootView 2 "+System.currentTimeMillis())
+    Log.e("rendering-timestamp","ARN RIM attachRootView 2 "+System.currentTimeMillis());
   }
 
   /**
@@ -915,6 +920,7 @@ public class ReactInstanceManager {
    */
   @ThreadConfined(UI)
   public void detachRootView(ReactRoot reactRoot) {
+    Log.e("rendering-timestamp","ARN RIM detachRootView "+System.currentTimeMillis());
     UiThreadUtil.assertOnUiThread();
     synchronized (mAttachedReactRoots) {
       if (mAttachedReactRoots.contains(reactRoot)) {
@@ -930,6 +936,7 @@ public class ReactInstanceManager {
   /** Uses configured {@link ReactPackage} instances to create all view managers. */
   public List<ViewManager> getOrCreateViewManagers(
       ReactApplicationContext catalystApplicationContext) {
+    Log.e("rendering-timestamp","ARN RIM getOrCreateViewManagers start"+System.currentTimeMillis());
     ReactMarker.logMarker(CREATE_VIEW_MANAGERS_START);
     Systrace.beginSection(TRACE_TAG_REACT_JAVA_BRIDGE, "createAllViewManagers");
     try {
@@ -948,10 +955,12 @@ public class ReactInstanceManager {
     } finally {
       Systrace.endSection(TRACE_TAG_REACT_JAVA_BRIDGE);
       ReactMarker.logMarker(CREATE_VIEW_MANAGERS_END);
+      Log.e("rendering-timestamp","ARN RIM getOrCreateViewManagers end"+System.currentTimeMillis());
     }
   }
 
   public @Nullable ViewManager createViewManager(String viewManagerName) {
+    Log.e("rendering-timestamp","ARN RIM createViewManager start"+System.currentTimeMillis());
     ReactApplicationContext context;
     synchronized (mReactContextLock) {
       context = (ReactApplicationContext) getCurrentReactContext();
@@ -967,6 +976,7 @@ public class ReactInstanceManager {
               ((ViewManagerOnDemandReactPackage) reactPackage)
                   .createViewManager(context, viewManagerName);
           if (viewManager != null) {
+            Log.e("rendering-timestamp","ARN RIM createViewManager end"+System.currentTimeMillis());
             return viewManager;
           }
         }
@@ -1052,6 +1062,7 @@ public class ReactInstanceManager {
 
   @ThreadConfined(UI)
   private void onJSBundleLoadedFromServer() {
+    Log.e("rendering-timestamp","ARN RIM onJSBundleLoadedFromServer "+System.currentTimeMillis());
     FLog.d(ReactConstants.TAG, "ReactInstanceManager.onJSBundleLoadedFromServer()");
 
     JSBundleLoader bundleLoader =
@@ -1074,10 +1085,12 @@ public class ReactInstanceManager {
     } else {
       mPendingReactContextInitParams = initParams;
     }
+    Log.e("rendering-timestamp","ARN RIM recreateReactContextInBackground end "+System.currentTimeMillis());
   }
 
   @ThreadConfined(UI)
   private void runCreateReactContextOnNewThread(final ReactContextInitParams initParams) {
+    Log.e("rendering-timestamp","ARN RIM runCreateReactContextOnNewThread start"+System.currentTimeMillis());
     FLog.d(ReactConstants.TAG, "ReactInstanceManager.runCreateReactContextOnNewThread()");
     UiThreadUtil.assertOnUiThread();
 
@@ -1168,9 +1181,11 @@ public class ReactInstanceManager {
             "create_react_context");
     ReactMarker.logMarker(REACT_CONTEXT_THREAD_START);
     mCreateReactContextThread.start();
+    Log.e("rendering-timestamp","ARN RIM runCreateReactContextOnNewThread end"+System.currentTimeMillis());
   }
 
   private void setupReactContext(final ReactApplicationContext reactContext) {
+    Log.e("rendering-timestamp","ARN RIM setupReactContext start"+System.currentTimeMillis());
     FLog.d(ReactConstants.TAG, "ReactInstanceManager.setupReactContext()");
     ReactMarker.logMarker(PRE_SETUP_REACT_CONTEXT_END);
     ReactMarker.logMarker(SETUP_REACT_CONTEXT_START);
@@ -1209,6 +1224,7 @@ public class ReactInstanceManager {
         new Runnable() {
           @Override
           public void run() {
+            Log.e("rendering-timestamp","ARN RIM setupReactContext runOnUiThread start"+System.currentTimeMillis());
             for (com.facebook.react.ReactInstanceEventListener listener : finalListeners) {
               // Sometimes this listener is null - probably due to race
               // condition between allocating listeners with a certain
@@ -1217,6 +1233,7 @@ public class ReactInstanceManager {
               if (listener != null) {
                 listener.onReactContextInitialized(reactContext);
               }
+              Log.e("rendering-timestamp","ARN RIM setupReactContext runOnUiThread end"+System.currentTimeMillis());
             }
           }
         });
@@ -1239,10 +1256,11 @@ public class ReactInstanceManager {
             Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
           }
         });
+    Log.e("rendering-timestamp","ARN RIM setupReactContext end"+System.currentTimeMillis());
   }
 
   private void attachRootViewToInstance(final ReactRoot reactRoot) {
-    Log.e("rendering-timestamp","ARN RIM attachRootViewToInstance "+System.currentTimeMillis())
+    Log.e("rendering-timestamp","ARN RIM attachRootViewToInstance "+System.currentTimeMillis());
     FLog.d(ReactConstants.TAG, "ReactInstanceManager.attachRootViewToInstance()");
     Systrace.beginSection(TRACE_TAG_REACT_JAVA_BRIDGE, "attachRootViewToInstance");
 
@@ -1297,7 +1315,7 @@ public class ReactInstanceManager {
           }
         });
     Systrace.endSection(TRACE_TAG_REACT_JAVA_BRIDGE);
-    Log.e("rendering-timestamp","ARN RIM attachRootViewToInstance 2 "+System.currentTimeMillis())
+    Log.e("rendering-timestamp","ARN RIM attachRootViewToInstance 2 "+System.currentTimeMillis());
   }
 
   private void detachViewFromInstance(ReactRoot reactRoot, CatalystInstance catalystInstance) {
@@ -1340,7 +1358,7 @@ public class ReactInstanceManager {
   private ReactApplicationContext createReactContext(
       JavaScriptExecutor jsExecutor, JSBundleLoader jsBundleLoader) {
 
-    Log.e("rendering-timestamp","ARN RIM createReactContext "+System.currentTimeMillis())
+    Log.e("rendering-timestamp","ARN RIM createReactContext "+System.currentTimeMillis());
     FLog.d(ReactConstants.TAG, "ReactInstanceManager.createReactContext()");
     ReactMarker.logMarker(CREATE_REACT_CONTEXT_START, jsExecutor.getName());
     final ReactApplicationContext reactContext = new ReactApplicationContext(mApplicationContext);
@@ -1435,7 +1453,7 @@ public class ReactInstanceManager {
     catalystInstance.runJSBundle();
     Systrace.endSection(TRACE_TAG_REACT_JAVA_BRIDGE);
 
-    Log.e("rendering-timestamp","ARN RIM createReactContext 2 "+System.currentTimeMillis())
+    Log.e("rendering-timestamp","ARN RIM createReactContext 2 "+System.currentTimeMillis());
     return reactContext;
   }
 
@@ -1444,7 +1462,7 @@ public class ReactInstanceManager {
       List<ReactPackage> packages,
       boolean checkAndUpdatePackageMembership) {
 
-    Log.e("rendering-timestamp","ARN RIM processPackages "+System.currentTimeMillis())
+    Log.e("rendering-timestamp","ARN RIM processPackages "+System.currentTimeMillis());
     NativeModuleRegistryBuilder nativeModuleRegistryBuilder =
         new NativeModuleRegistryBuilder(reactContext, this);
 
@@ -1477,14 +1495,14 @@ public class ReactInstanceManager {
       Systrace.endSection(TRACE_TAG_REACT_JAVA_BRIDGE);
       ReactMarker.logMarker(BUILD_NATIVE_MODULE_REGISTRY_END);
     }
-    Log.e("rendering-timestamp","ARN RIM processPackages 2 "+System.currentTimeMillis())
+    Log.e("rendering-timestamp","ARN RIM processPackages 2 "+System.currentTimeMillis());
     return nativeModuleRegistry;
   }
 
   private void processPackage(
       ReactPackage reactPackage, NativeModuleRegistryBuilder nativeModuleRegistryBuilder) {
 
-    Log.e("rendering-timestamp","ARN RIM processPackage "+System.currentTimeMillis())
+    Log.e("rendering-timestamp","ARN RIM processPackage "+System.currentTimeMillis());
     SystraceMessage.beginSection(TRACE_TAG_REACT_JAVA_BRIDGE, "processPackage")
         .arg("className", reactPackage.getClass().getSimpleName())
         .flush();
@@ -1497,6 +1515,6 @@ public class ReactInstanceManager {
       ((ReactPackageLogger) reactPackage).endProcessPackage();
     }
     SystraceMessage.endSection(TRACE_TAG_REACT_JAVA_BRIDGE).flush();
-    Log.e("rendering-timestamp","ARN RIM processPackage 2 "+System.currentTimeMillis())
+    Log.e("rendering-timestamp","ARN RIM processPackage 2 "+System.currentTimeMillis());
   }
 }

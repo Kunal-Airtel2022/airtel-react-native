@@ -13,6 +13,8 @@ import static com.facebook.react.modules.systeminfo.AndroidInfoHelpers.getFriend
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 import com.facebook.hermes.reactexecutor.HermesExecutor;
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
@@ -285,6 +287,7 @@ public class ReactInstanceManagerBuilder {
    * </ul>
    */
   public ReactInstanceManager build() {
+    Log.e("rendering-timestamp","ARN RIMB onBuild start"+System.currentTimeMillis());
     Assertions.assertNotNull(
         mApplication, "Application property has not been set with this builder");
 
@@ -311,7 +314,7 @@ public class ReactInstanceManagerBuilder {
     String appName = mApplication.getPackageName();
     String deviceName = getFriendlyDeviceName();
 
-    Log.e("rendering-timestamp","ARN RIMB onBuild "+System.currentTimeMillis())
+    Log.e("rendering-timestamp","ARN RIMB onBuild end"+System.currentTimeMillis());
 
     return new ReactInstanceManager(
         mApplication,
