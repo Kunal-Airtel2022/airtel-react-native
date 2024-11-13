@@ -130,6 +130,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
 
   @Override
   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    Log.e("rendering-timestamp","ARN RRV onMeasure "+System.currentTimeMillis());
     Systrace.beginSection(TRACE_TAG_REACT_JAVA_BRIDGE, "ReactRootView.onMeasure");
     ReactMarker.logMarker(ReactMarkerConstants.ROOT_VIEW_ON_MEASURE_START);
     try {
@@ -179,6 +180,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
       }
       mLastWidth = width;
       mLastHeight = height;
+      Log.e("rendering-timestamp","ARN RRV onMeasure 2 "+System.currentTimeMillis());
 
     } finally {
       ReactMarker.logMarker(ReactMarkerConstants.ROOT_VIEW_ON_MEASURE_END);
@@ -274,6 +276,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
 
   @Override
   protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
+    Log.e("rendering-timestamp","ARN RRV onFocusChanged "+System.currentTimeMillis());
     if (mReactInstanceManager == null
         || !mIsAttachedToInstance
         || mReactInstanceManager.getCurrentReactContext() == null) {
@@ -281,10 +284,12 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
           TAG,
           "Unable to handle focus changed event as the catalyst instance has not been attached");
       super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+      Log.e("rendering-timestamp","ARN RRV onFocusChanged 2 "+System.currentTimeMillis());
       return;
     }
     mAndroidHWInputDeviceHelper.clearFocus();
     super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+    Log.e("rendering-timestamp","ARN RRV onFocusChanged 21 "+System.currentTimeMillis());
   }
 
   @Override
@@ -333,12 +338,14 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
 
   @Override
   protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    Log.e("rendering-timestamp","ARN RRV onLayout "+System.currentTimeMillis());
     // No-op in non-Fabric since UIManagerModule handles actually laying out children.
 
     // In Fabric, update LayoutSpecs just so we update the offsetX and offsetY.
     if (mWasMeasured && isFabric()) {
       updateRootLayoutSpecs(false, mWidthMeasureSpec, mHeightMeasureSpec);
     }
+    Log.e("rendering-timestamp","ARN RRV onLayout 2 "+System.currentTimeMillis());
   }
 
   private boolean isFabric() {
@@ -347,11 +354,13 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
 
   @Override
   protected void onAttachedToWindow() {
+    Log.e("rendering-timestamp","ARN RRV onAttachedToWindow "+System.currentTimeMillis());
     super.onAttachedToWindow();
     if (mIsAttachedToInstance) {
       removeOnGlobalLayoutListener();
       getViewTreeObserver().addOnGlobalLayoutListener(getCustomGlobalLayoutListener());
     }
+    Log.e("rendering-timestamp","ARN RRV onAttachedToWindow 2 "+System.currentTimeMillis());
   }
 
   @Override
@@ -368,6 +377,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
 
   @Override
   public void onViewAdded(final View child) {
+    Log.e("rendering-timestamp","ARN RRV onViewAdded "+System.currentTimeMillis());
     super.onViewAdded(child);
 
     // See comments in {@code ReactRootViewProhibitedChildView} for why we want this mechanism.
@@ -397,6 +407,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
         ReactMarker.logMarker(ReactMarkerConstants.CONTENT_APPEARED, mJSModuleName, mRootViewTag);
       }
     }
+    Log.e("rendering-timestamp","ARN RRV onViewAdded 2 "+System.currentTimeMillis());
   }
 
   @Override
@@ -506,10 +517,12 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
    */
   private void updateRootLayoutSpecs(
       boolean measureSpecsChanged, final int widthMeasureSpec, final int heightMeasureSpec) {
+    Log.e("rendering-timestamp","ARN RRV updateRootLayoutSpecs "+System.currentTimeMillis());
     ReactMarker.logMarker(ReactMarkerConstants.ROOT_VIEW_UPDATE_LAYOUT_SPECS_START);
     if (mReactInstanceManager == null) {
       ReactMarker.logMarker(ReactMarkerConstants.ROOT_VIEW_UPDATE_LAYOUT_SPECS_END);
       FLog.w(TAG, "Unable to update root layout specs for uninitialized ReactInstanceManager");
+      Log.e("rendering-timestamp","ARN RRV updateRootLayoutSpecs 2 "+System.currentTimeMillis());
       return;
     }
     // In Fabric we cannot call `updateRootLayoutSpecs` until a SurfaceId has been set.
@@ -518,6 +531,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
     if (isFabricEnabled && !isRootViewTagSet()) {
       ReactMarker.logMarker(ReactMarkerConstants.ROOT_VIEW_UPDATE_LAYOUT_SPECS_END);
       FLog.e(TAG, "Unable to update root layout specs for ReactRootView: no rootViewTag set yet");
+      Log.e("rendering-timestamp","ARN RRV updateRootLayoutSpecs 21 "+System.currentTimeMillis());
       return;
     }
 
@@ -547,6 +561,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
       }
     }
 
+    Log.e("rendering-timestamp","ARN RRV updateRootLayoutSpecs 23 "+System.currentTimeMillis());
     ReactMarker.logMarker(ReactMarkerConstants.ROOT_VIEW_UPDATE_LAYOUT_SPECS_END);
   }
 
@@ -618,10 +633,12 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
     // that all touch events are only passed to JS after React/JS side is ready to consume
     // them. Otherwise, these events might break the states expected by JS.
     // Note that this callback was invoked from within the UI thread.
+    Log.e("rendering-timestamp","ARN RRV onAttachedToReactInstance "+System.currentTimeMillis());
     mJSTouchDispatcher = new JSTouchDispatcher(this);
     if (mRootViewEventListener != null) {
       mRootViewEventListener.onAttachedToReactInstance(this);
     }
+    Log.e("rendering-timestamp","ARN RRV onAttachedToReactInstance 2 "+System.currentTimeMillis());
   }
 
   public void setEventListener(@Nullable ReactRootViewEventListener eventListener) {
@@ -659,6 +676,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
   @Override
   public void runApplication() {
     Systrace.beginSection(TRACE_TAG_REACT_JAVA_BRIDGE, "ReactRootView.runApplication");
+    Log.e("rendering-timestamp","ARN RRV runApplication "+System.currentTimeMillis());
     try {
       if (mReactInstanceManager == null || !mIsAttachedToInstance) {
         return;
@@ -688,6 +706,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
       catalystInstance.getJSModule(AppRegistry.class).runApplication(jsAppModuleName, appParams);
     } finally {
       Systrace.endSection(TRACE_TAG_REACT_JAVA_BRIDGE);
+      Log.e("rendering-timestamp","ARN RRV runApplication 2"+System.currentTimeMillis());
     }
   }
 
@@ -714,6 +733,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
   }
 
   private void attachToReactInstanceManager() {
+    Log.e("rendering-timestamp","ARN RRV attachToReactInstanceManager "+System.currentTimeMillis());
     Systrace.beginSection(TRACE_TAG_REACT_JAVA_BRIDGE, "attachToReactInstanceManager");
     ReactMarker.logMarker(ReactMarkerConstants.ROOT_VIEW_ATTACH_TO_REACT_INSTANCE_MANAGER_START);
 
@@ -736,6 +756,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
       Assertions.assertNotNull(mReactInstanceManager).attachRootView(this);
       getViewTreeObserver().addOnGlobalLayoutListener(getCustomGlobalLayoutListener());
     } finally {
+      Log.e("rendering-timestamp","ARN RRV attachToReactInstanceManager 2 "+System.currentTimeMillis());
       ReactMarker.logMarker(ReactMarkerConstants.ROOT_VIEW_ATTACH_TO_REACT_INSTANCE_MANAGER_END);
       Systrace.endSection(TRACE_TAG_REACT_JAVA_BRIDGE);
     }

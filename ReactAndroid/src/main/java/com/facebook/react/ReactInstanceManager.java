@@ -1233,8 +1233,9 @@ public class ReactInstanceManager {
               if (listener != null) {
                 listener.onReactContextInitialized(reactContext);
               }
-              Log.e("rendering-timestamp","ARN RIM setupReactContext runOnUiThread end"+System.currentTimeMillis());
+              Log.e("rendering-timestamp","ARN RIM setupReactContext runOnUiThread loop"+System.currentTimeMillis());
             }
+            Log.e("rendering-timestamp","ARN RIM setupReactContext runOnUiThread end"+System.currentTimeMillis());
           }
         });
     Systrace.endSection(TRACE_TAG_REACT_JAVA_BRIDGE);
