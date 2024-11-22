@@ -31,7 +31,7 @@ const DATA = [
   'Coke',
   'Beer',
   'Cheesecake',
-  'Ice Cream',
+  'Brownie',
 ];
 
 const Item = ({item, separators}: RenderItemProps<string>) => {
@@ -59,21 +59,20 @@ const Item = ({item, separators}: RenderItemProps<string>) => {
   );
 };
 
-type Props = {
-  exampleProps: $Shape<React.ElementConfig<typeof FlatList>>,
+type Props = $ReadOnly<{
+  exampleProps: Partial<React.ElementConfig<typeof FlatList>>,
   onTest?: ?() => void,
   testLabel?: ?string,
   testOutput?: ?string,
   children?: ?React.Node,
-};
+}>;
 
-const BaseFlatListExample = React.forwardRef(
-  (
-    props: Props,
-    ref:
-      | ((null | FlatList<string>) => mixed)
-      | {current: null | FlatList<string>, ...},
-  ) => {
+const BaseFlatListExample: component(
+  ref: React.RefSetter<FlatList<string>>,
+  ...props: Props
+) = React.forwardRef(
+  // $FlowFixMe[incompatible-call]
+  (props: Props, ref) => {
     return (
       <View style={styles.container}>
         {props.testOutput != null ? (
@@ -93,11 +92,14 @@ const BaseFlatListExample = React.forwardRef(
         {props.children}
         <FlatList
           {...props.exampleProps}
+          // $FlowFixMe[incompatible-type]
           ref={ref}
           testID="flat_list"
+          // $FlowFixMe[incompatible-type]
           data={DATA}
           keyExtractor={(item, index) => item + index}
           style={styles.list}
+          // $FlowFixMe[incompatible-type-arg]
           renderItem={Item}
         />
       </View>
@@ -105,10 +107,7 @@ const BaseFlatListExample = React.forwardRef(
   },
 );
 
-export default (BaseFlatListExample: React.AbstractComponent<
-  Props,
-  FlatList<string>,
->);
+export default BaseFlatListExample;
 
 const ITEM_INNER_HEIGHT = 70;
 const ITEM_MARGIN = 8;

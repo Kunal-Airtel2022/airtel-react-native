@@ -66,10 +66,7 @@ function getImports(
       | 'EdgeInsetsPrimitive'
       | 'ImageSourcePrimitive'
       | 'PointPrimitive'
-      | $TEMPORARY$string<'ColorPrimitive'>
-      | $TEMPORARY$string<'EdgeInsetsPrimitive'>
-      | $TEMPORARY$string<'ImageSourcePrimitive'>
-      | $TEMPORARY$string<'PointPrimitive'>,
+      | 'DimensionPrimitive',
   ) {
     switch (name) {
       case 'ColorPrimitive':
@@ -86,6 +83,15 @@ function getImports(
       case 'EdgeInsetsPrimitive':
         imports.add('import com.facebook.react.bridge.ReadableMap;');
         return;
+      case 'DimensionPrimitive':
+        if (type === 'delegate') {
+          imports.add(
+            'import com.facebook.react.bridge.DimensionPropConverter;',
+          );
+        } else {
+          imports.add('import com.facebook.yoga.YogaValue;');
+        }
+        return;
       default:
         (name: empty);
         throw new Error(`Invalid ReservedPropTypeAnnotation name, got ${name}`);
@@ -96,6 +102,7 @@ function getImports(
     const typeAnnotation = prop.typeAnnotation;
 
     if (typeAnnotation.type === 'ReservedPropTypeAnnotation') {
+      // $FlowFixMe[incompatible-call]
       addImportsForNativeName(typeAnnotation.name);
     }
 
@@ -106,6 +113,23 @@ function getImports(
     if (typeAnnotation.type === 'ObjectTypeAnnotation') {
       imports.add('import com.facebook.react.bridge.ReadableMap;');
     }
+
+    if (typeAnnotation.type === 'MixedTypeAnnotation') {
+      if (type === 'delegate') {
+        imports.add('import com.facebook.react.bridge.DynamicFromObject;');
+      } else {
+        imports.add('import com.facebook.react.bridge.Dynamic;');
+      }
+    }
+  });
+
+  component.commands.forEach(command => {
+    command.typeAnnotation.params.forEach(param => {
+      const cmdParamType = param.typeAnnotation.type;
+      if (cmdParamType === 'ArrayTypeAnnotation') {
+        imports.add('import com.facebook.react.bridge.ReadableArray;');
+      }
+    });
   });
 
   return imports;

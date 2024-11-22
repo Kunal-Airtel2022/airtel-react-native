@@ -11,15 +11,15 @@
 'use strict';
 
 const {ParserError} = require('./errors');
-
 const path = require('path');
 
 export type TypeDeclarationMap = {[declarationName: string]: $FlowFixMe};
 
-export type TypeAliasResolutionStatus =
+export type TypeResolutionStatus =
   | $ReadOnly<{
+      type: 'alias' | 'enum',
       successful: true,
-      aliasName: string,
+      name: string,
     }>
   | $ReadOnly<{
       successful: false,
@@ -33,10 +33,17 @@ function extractNativeModuleName(filename: string): string {
 
 export type ParserErrorCapturer = <T>(fn: () => T) => ?T;
 
+// $FlowFixMe[unclear-type] there's no flowtype for ASTs
+export type PropAST = Object;
+
+// $FlowFixMe[unclear-type] there's no flowtype for ASTs
+export type ASTNode = Object;
+
 function createParserErrorCapturer(): [
   Array<ParserError>,
   ParserErrorCapturer,
 ] {
+  // $FlowFixMe[missing-empty-array-annot]
   const errors = [];
   function guard<T>(fn: () => T): ?T {
     try {
@@ -45,12 +52,14 @@ function createParserErrorCapturer(): [
       if (!(error instanceof ParserError)) {
         throw error;
       }
+      // $FlowFixMe[incompatible-call]
       errors.push(error);
 
       return null;
     }
   }
 
+  // $FlowFixMe[incompatible-return]
   return [errors, guard];
 }
 
@@ -72,6 +81,12 @@ function verifyPlatforms(
     }
 
     if (name.endsWith('IOS')) {
+      excludedPlatforms.add('android');
+      return;
+    }
+
+    if (name.endsWith('Windows')) {
+      excludedPlatforms.add('iOS');
       excludedPlatforms.add('android');
       return;
     }
@@ -188,6 +203,17 @@ function isModuleRegistryCall(node: $FlowFixMe): boolean {
   return true;
 }
 
+function getSortedObject<T>(unsortedObject: {[key: string]: T}): {
+  [key: string]: T,
+} {
+  return Object.keys(unsortedObject)
+    .sort()
+    .reduce((sortedObject: {[key: string]: T}, key: string) => {
+      sortedObject[key] = unsortedObject[key];
+      return sortedObject;
+    }, {});
+}
+
 module.exports = {
   getConfigType,
   extractNativeModuleName,
@@ -195,4 +221,5 @@ module.exports = {
   verifyPlatforms,
   visit,
   isModuleRegistryCall,
+  getSortedObject,
 };
